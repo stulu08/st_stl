@@ -32,7 +32,7 @@ using st_vec = std::vector<T>;
 #endif
 
 template<class T>
-void dump_vector(st_vec<T>& vec) {
+void dump_vector(const st_vec<T>& vec) {
 	printf("capacity:	%d\n", (int)vec.capacity());
 	printf("size:		%d\n", (int)vec.size());
 	printf("data:		%p\n", (void*)vec.data());
@@ -44,15 +44,9 @@ void dump_vector(st_vec<T>& vec) {
 
 int main() {
 	{
-		st_vec<int> vec;
+		st_vec<int> vec(10);
 
-		dump_vector(vec);
 
-		vec.resize(10, 2);
-
-		dump_vector(vec);
-
-		vec.resize(20, 4);
 
 		dump_vector(vec);
 

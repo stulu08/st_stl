@@ -1,7 +1,6 @@
 #pragma once
 #include <allocator.h>
 
-
 ST_STL_BEGIN
 
 template<class T>
@@ -25,21 +24,20 @@ public:
 	using size_type = ST_DEFAULT_SIZE_TYPE;
 
 	constexpr vector() ST_NOEXCEPT {}
-	constexpr vector(const vector& copy) {
-		copy_from(copy);
+	ST_INLINE constexpr vector(const vector& copy) {
+		this->copy_from(copy);
 	}
-	constexpr vector(vector&& src) ST_NOEXCEPT {
+	ST_INLINE constexpr vector(vector&& src) ST_NOEXCEPT {
 		m_data = src.m_data;
 		src.m_data = storage_type();
 	};
-
 	ST_INLINE constexpr vector(const size_type count) {
-		reserve(count);
+		this->reserve(count);
 	}
 	
 	ST_INLINE ~vector() {
-		if (m_data.first && capacity() > 0) {
-			allocator_type{}.deallocate(m_data.first, capacity());
+		if (m_data.first && this->capacity() > 0) {
+			allocator_type{}.deallocate(m_data.first, this->capacity());
 		}
 	}
 	
@@ -47,10 +45,10 @@ public:
 		if (this == __builtin_addressof(right)) {
 			return *this;
 		}
-		copy_from(right);
+		this->copy_from(right);
 		return *this;
 	}
-	ST_INLINE vector& operator=(vector&& right) {
+	ST_INLINE vector& operator=(vector&& right) ST_NOEXCEPT {
 		if (this == __builtin_addressof(right)) {
 			return *this;
 		}
@@ -62,7 +60,6 @@ public:
 	ST_INLINE void reserve(const size_type count) {
 		size_type newCap = count;
 		size_type oldCap = this->capacity();
-		size_type oldSize = this->size();
 
 		if (newCap < oldCap) {
 #if ST_DEBUG_LEVEL > 0
@@ -70,21 +67,20 @@ public:
 #endif
 		}
 		else if(newCap > oldCap) {
-			value_type* newVec = allocator_type{}.allocate(count);
-			if (oldCap != 0 && m_data.first) {
-				ST_C_CALL memcpy_s(newVec, newCap * sizeof(value_type), m_data.first, oldCap * sizeof(value_type));
+			value_type* newFirst = allocator_type{}.allocate(newCap);
+
+			if (m_data.first != nullptr && oldCap > 0) {
+				allocator_type{}.copy(newFirst, m_data.first, newCap);
 				allocator_type{}.deallocate(m_data.first, oldCap);
 			}
+			m_data.last = newFirst + this->size();
 
-			m_data.first = newVec;
-			m_data.last = m_data.first + sizeof(value_type) * oldSize;
-			m_data.end = m_data.first + sizeof(value_type) * newCap;
+			m_data.end = newFirst + newCap;
+			m_data.first = newFirst;
 		}
 		// oldCap == newCap no reserve needed
 	}
-	ST_INLINE void resize(const size_type count) {
-		resize<EmptyType>(count, EmptyType());
-	}
+
 	template<class fill_type>
 	ST_INLINE void resize(const size_type count, const fill_type& fill) {
 		size_type newSize = count;
@@ -92,64 +88,74 @@ public:
 
 		// erease elements, capacity will not change, objects will be deleted
 		if (newSize < oldSize) {
-			value_type* newLast = m_data.first + sizeof(value_type) * newSize;
-			destroy_range(newLast, m_data.last);
+			value_type* newLast = m_data.first + newSize;
+			this->destroy_range(newLast, m_data.last);
 			m_data.last = newLast;
 			return;
 		}
 		// append elements
 		if (newSize > oldSize) {
-			size_type oldCap = this->capacity();
-			if (newSize > oldCap) {
-				reserve(newSize);
+			if (newSize > this->capacity()) {
+				this->reserve(newSize);
 			}
 
 			if constexpr (is_same<fill_type, value_type>) {
-				uninitlize_fill_range<fill_type>(m_data.first + sizeof(value_type) * oldSize, m_data.end, fill);
+				this->uninitlize_fill_range(m_data.last, newSize - oldSize, fill);
 			}
 			else {
-				construct_fill_range(m_data.first + sizeof(value_type) * oldSize, m_data.end);
+				this->construct_fill_range(m_data.last, newSize - oldSize);
 			}
 			m_data.last = m_data.end;
 		}
 		// oldSize == newSize no resize needed
 	}
 
-	ST_INLINE constexpr size_type capacity() const ST_NOEXCEPT {
-		return static_cast<size_type>((m_data.end - m_data.first) / sizeof(value_type));
+	ST_INLINE void resize(const size_type count) {
+		this->resize(count, EmptyType());
 	}
-	ST_INLINE constexpr size_type size() const ST_NOEXCEPT {
-		return static_cast<size_type>((m_data.last - m_data.first) / sizeof(value_type));
+
+	ST_INLINE size_type capacity() const ST_NOEXCEPT {
+		return static_cast<size_type>((m_data.end - m_data.first));
 	}
-	ST_INLINE constexpr value_type* data() const ST_NOEXCEPT {
+	ST_INLINE size_type size() const ST_NOEXCEPT {
+		return static_cast<size_type>((m_data.last - m_data.first));
+	}
+	ST_INLINE value_type* data() ST_NOEXCEPT {
+		return m_data.first;
+	}
+	ST_INLINE const value_type* data() const ST_NOEXCEPT {
 		return m_data.first;
 	}
 private:
 	ST_INLINE void copy_from(const vector& copy) {
 		resize(copy.size());
 		if (copy.capacity() > copy.size())
-			reserve(copy.capacity());
-		ST_C_CALL memcpy_s(m_data.first, m_data.end - m_data.first, copy.m_data.first, copy.m_data.end - copy.m_data.first);
+			this->reserve(copy.capacity());
+		allocator_type{}.copy(m_data.first, copy.m_data.first, copy.capacity());
 	}
 	ST_INLINE void destroy_range(value_type* first, value_type* last) {
 		for (; first != last; first++) {
 			allocator_type{}.destroy(first);
 		}
 	}
+
 	template<class Val>
-	ST_INLINE void uninitlize_fill_range(value_type* first, value_type* last, const Val& filler) {
-		for (; first != last; first++) {
-			ST_C_CALL memcpy_s(first, sizeof(value_type), &filler, sizeof(value_type));
+	ST_INLINE value_type* uninitlize_fill_range(value_type* first, size_type count, const Val& filler) {
+		for (size_type i = 0; i < count; i++) {
+			ST_C_CALL memcpy_s(first, sizeof(value_type), &filler, sizeof(Val));
+			first++;
 		}
+		return first;
 	}
-	ST_INLINE void construct_fill_range(value_type* first, value_type* last) {
-		for (; first != last; first++) {
+	ST_INLINE value_type* construct_fill_range(value_type* first, size_type count) {
+		for (size_type i = 0; i < count; i++) {
 			allocator_type{}.construct(first);
+			first++;
 		}
+		return first;
 	}
 private:
 	storage_type m_data;
 };
-
 
 ST_STL_END

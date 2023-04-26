@@ -52,6 +52,9 @@ public:
 		// new (addres) type(constructor params);
 		::new (ptr) value_type(static_cast<Types&&>(Args)...);
 	}
+	ST_INLINE void copy(value_type* dest, const value_type* src, size_type count) const {
+		ST_C_CALL memcpy_s(dest, count * sizeof(value_type), src, count * sizeof(value_type));
+	}
 };
 
 template<>
