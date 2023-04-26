@@ -100,12 +100,11 @@ public:
 			}
 
 			if constexpr (is_same<fill_type, value_type>) {
-				this->uninitlize_fill_range(m_data.last, newSize - oldSize, fill);
+				m_data.last = this->uninitlize_fill_range(m_data.last, newSize - oldSize, fill);
 			}
 			else {
-				this->construct_fill_range(m_data.last, newSize - oldSize);
+				m_data.last = this->construct_fill_range(m_data.last, newSize - oldSize);
 			}
-			m_data.last = m_data.end;
 		}
 		// oldSize == newSize no resize needed
 	}

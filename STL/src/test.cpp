@@ -44,10 +44,11 @@ void dump_vector(const st_vec<T>& vec) {
 
 int main() {
 	{
-		st_vec<int> vec(10);
+		st_vec<int> vec;
 
-
-
+		vec.resize(20, 5);
+		dump_vector(vec);
+		vec.resize(40, 2);
 		dump_vector(vec);
 
 		printf("Allocations/Deallocations: %d/%d\n", STATS::Allocations, STATS::Deallocations);
