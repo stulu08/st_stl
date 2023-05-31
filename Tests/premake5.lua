@@ -1,5 +1,5 @@
-project "STL"
-	kind "StaticLib"
+project "Tests"
+	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
@@ -10,8 +10,7 @@ project "STL"
 
 	files
 	{
-		"src/**.cpp",
-		"include/**.h"
+		"src/**.*",
 	}
 
 	defines
@@ -22,9 +21,13 @@ project "STL"
 	includedirs
 	{
 		"src",
-		"include"
+		"%{wks.location}/STL/src",
+		"%{wks.location}/STL/include"
 	}
-	
+	links 
+	{
+		"STL"
+	}
 	filter "system:windows"
 		systemversion "latest"
 		

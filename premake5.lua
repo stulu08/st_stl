@@ -36,6 +36,6 @@ workspace "Stulu STL"
 		}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-builddir = "%{wks.location}/build/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 include "STL"
+include "Tests"

@@ -33,7 +33,7 @@
 #endif // !ST_NODISCARD_MEMLEAK
 
 #ifndef ST_VIRTUAL
-#define ST_VIRTUAL virtual
+#define ST_VIRTUAL
 #endif // !ST_VIRTUAL
 
 #ifndef ST_OVERRIDE
@@ -50,8 +50,12 @@
 #endif
 #endif // !ST_DEBUG_LEVEL
 
+#ifndef ST_STL_NAMESPACE_NAME
+#define ST_STL_NAMESPACE_NAME stulu
+#endif // !ST_STL_NAMESPACE_NAME
+
 #ifndef ST_STL_BEGIN
-#define ST_STL_BEGIN namespace Stulu {
+#define ST_STL_BEGIN namespace ST_STL_NAMESPACE_NAME {
 #endif // !ST_STL_BEGIN
 
 #ifndef ST_STL_END
@@ -59,7 +63,7 @@
 #endif // !ST_STL_END
 
 #ifndef ST_STL
-#define ST_STL ::Stulu::
+#define ST_STL ::ST_STL_NAMESPACE_NAME::
 #endif // !ST_STL
 
 #ifndef ST_WIDE_
@@ -106,7 +110,7 @@ if (!(expr)) {                                               \
 
 #ifndef ST_C_CALL
 #define ST_C_CALL ::
-#endif // !ST_DEFAULT_SIZE_TYPE
+#endif // !ST_C_CALL
 
 ST_STL_BEGIN
 
@@ -119,5 +123,4 @@ ST_STL_BEGIN
 	public:
 		EmptyType() = default;
 	};
-
 ST_STL_END
