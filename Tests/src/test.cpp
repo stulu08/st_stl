@@ -4,6 +4,6 @@ int main() {
 	
 	VectorSpeedComaprison();
 	
-	system("pause");
+	//system("pause");
 	return 0;
 }

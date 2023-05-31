@@ -2,6 +2,15 @@
 #include <stdio.h>
 #include <assert.h>
 
+// enable/disable all additional features
+#ifndef ST_ADDITIONAL_FEATURES
+#define ST_ADDITIONAL_FEATURES 1
+#endif // !ST_ADDITIONAL_FEATURES
+
+#ifndef ST_ADDITIONAL_FEATURES_ENABLED_IMPL_FUNC 
+#define ST_ADDITIONAL_FEATURES_ENABLED_IMPL_FUNC(x) static ST_INLINE bool AdditionalFeaturesEnable(){ return x; }
+#endif // !ST_ADDITIONAL_FEATURES_ENABLED_IMPL_FUNC
+
 #ifndef _DEBUG
 #ifdef ST_DEBUG
 #define _DEBUG
@@ -15,7 +24,6 @@
 #ifndef ST_F_INLINE
 #define ST_F_INLINE __forceinline
 #endif // !ST_INLINE
-
 
 #ifndef ST_INLINE_VAR
 #define ST_INLINE_VAR inline
@@ -33,7 +41,7 @@
 #endif // !ST_NODISCARD_MEMLEAK
 
 #ifndef ST_VIRTUAL
-#define ST_VIRTUAL
+#define ST_VIRTUAL virtual
 #endif // !ST_VIRTUAL
 
 #ifndef ST_OVERRIDE
@@ -108,9 +116,13 @@ if (!(expr)) {                                               \
 #define ST_DEFAULT_SIZE_TYPE size_t
 #endif // !ST_DEFAULT_SIZE_TYPE
 
-#ifndef ST_C_CALL
-#define ST_C_CALL ::
-#endif // !ST_C_CALL
+#ifndef ST_C_STD
+#define ST_C_STD ::
+#endif // !ST_C_STD
+
+#ifndef ST_CPP_STD
+#define ST_CPP_STD ::std::
+#endif // !ST_CPP_STD
 
 ST_STL_BEGIN
 

@@ -1,6 +1,5 @@
 #pragma once
 #include <stulu/allocator.h>
-
 ST_STL_BEGIN
 
 template<class T>
@@ -70,7 +69,11 @@ public:
 			value_type* newFirst = get_allocator().allocate(newCap);
 
 			if (m_data.first != nullptr && oldCap > 0) {
-				get_allocator().copy(newFirst, m_data.first, oldCap);
+#if ST_ADDITIONAL_ALLOCATOR_FEATURES
+				get_allocator().move(newFirst, m_data.first, oldCap);
+#else
+				ST_STL memmove(newFirst, m_data.first, sizeof(value_type) * oldCap);
+#endif
 				get_allocator().deallocate(m_data.first, oldCap);
 			}
 			m_data.last = newFirst + size();
@@ -143,7 +146,7 @@ public:
 
 		// TODO: May switch to moving each object using copy or move constructor
 		if (m_data.first != nullptr) {
-			get_allocator().copy(newFirst, m_data.first, newCap);
+			get_allocator().move(newFirst, m_data.first, newCap);
 			get_allocator().deallocate(m_data.first, oldCap);
 		}
 
@@ -226,10 +229,17 @@ private:
 	}
 
 	ST_INLINE void copy_from_other(const vector& copy) {
-		resize(copy.size());
-		if (copy.capacity() > copy.size())
-			reserve(copy.capacity());
-		get_allocator().copy(m_data.first, copy.m_data.first, copy.capacity());
+		const size_type cap = copy.capacity();
+		const size_type size = copy.size();
+		resize(size);
+		if (cap > size)
+			reserve(cap);
+
+#if ST_ADDITIONAL_ALLOCATOR_FEATURES
+		get_allocator().move(m_data.first, copy.m_data.first, cap);
+#else
+		ST_STL memmove(m_data.first, copy.m_data.first, sizeof(value_type) * cap);
+#endif
 	}
 
 	template <class... Types>
@@ -258,7 +268,11 @@ private:
 	template<class Val>
 	ST_INLINE value_type* uninitlize_fill_range(value_type* first, const size_type count, const Val& filler) {
 		for (size_type i = 0; i < count; i++) {
-			ST_C_CALL memcpy_s(first, sizeof(value_type), &filler, sizeof(Val));
+#if ST_ADDITIONAL_ALLOCATOR_FEATURES
+			get_allocator().move(first, &filler, 1);
+#else
+			ST_STL memmove(first, &filler, sizeof(value_type));
+#endif
 			first++;
 		}
 		return first;
