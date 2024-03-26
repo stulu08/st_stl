@@ -6,7 +6,7 @@
 #include <assert.h>
 
 #ifndef ST_REPORT_ERROR
-#if ST_DEBUG_LEVEL
+#if ST_DEBUG
 #define ST_REPORT_ERROR(msg)     							\
 {							   								\
 	::_wassert(ST_WIDE(msg), ST_WIDE(__FILE__), __LINE__);	\
