@@ -1,8 +1,7 @@
 #pragma once
-#include <stulu/stulu.h>
+#include "cstddef.h"
 
 #include <string.h>
-#include <cstring>
 ST_STL_BEGIN
 
 using ST_C_STD memchr;
@@ -42,14 +41,14 @@ ST_INLINE int memcpy_s(void* destination, ST_DEFAULT_SIZE_TYPE destinationSize, 
         return 1;
 
     if (source == nullptr || destinationSize < sourceSize) {
-        memset(destination, '\0', destinationSize);
+        memset(destination, '\0', (size_t)destinationSize);
         if (source == nullptr)
             return 2;
         if (destinationSize < sourceSize)
             return 3;
     }
     // can copy
-    memcpy(destination, source, sourceSize);
+    memcpy(destination, source, (size_t)sourceSize);
     return 0;
 }
 
@@ -68,7 +67,7 @@ ST_INLINE int memmove_s(void* destination, ST_DEFAULT_SIZE_TYPE destinationSize,
     if (destinationSize < sourceSize)
         return 3;
     // can move
-    memmove(destination, source, sourceSize);
+    memmove(destination, source, (size_t)sourceSize);
     return 0;
 }
 

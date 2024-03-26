@@ -1,7 +1,5 @@
-include "./vendor/premake/premake_customization/solution_items.lua"
-include "./vendor/premake/premake_customization/generate_doc.lua"
-workspace "Stulu STL"
-	startproject "STL"
+workspace "Stulu stl"
+	startproject "stl"
 	configurations
 	{
 		"Debug",
@@ -11,12 +9,6 @@ workspace "Stulu STL"
 	flags
 	{
 		"MultiProcessorCompile"
-	}
-	solution_items 
-	{
-		"premake5.lua",
-		"STL/premake5.lua",
-		"README.md"
 	}
 	architecture "x86_64"
 
@@ -37,5 +29,6 @@ workspace "Stulu STL"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-include "STL"
-include "Tests"
+include "stl"
+include "tests"
+include "vendor/googletest"

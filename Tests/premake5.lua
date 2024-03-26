@@ -1,4 +1,4 @@
-project "Tests"
+project "tests"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -21,12 +21,14 @@ project "Tests"
 	includedirs
 	{
 		"src",
-		"%{wks.location}/STL/src",
-		"%{wks.location}/STL/include"
+		"%{wks.location}/stl/src",
+		"%{wks.location}/stl/include",
+		"%{wks.location}/vendor/googletest/include"
 	}
 	links 
 	{
-		"STL"
+		"stl",
+		"googletest"
 	}
 	filter "system:windows"
 		systemversion "latest"
