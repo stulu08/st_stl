@@ -51,4 +51,4 @@ jobs:
 
     - name: Google Test Run
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: "tests/bin/Debug-windows-x86_64/tests.exe"
+      run: ./tests/bin/Debug-windows-x86_64/tests.exe
