@@ -1,28 +1,16 @@
 #pragma once
-#include <stdio.h>
+#include <crtdefs.h>
 
-#include "cstddef.h"
+#undef assert
+void _CRTIMP __cdecl _wassert(const wchar_t* _Message, const wchar_t* _File, unsigned _Line);
+void _CRTIMP __cdecl _assert(const char* _Message, const char* _File, unsigned _Line);
 
-#include <assert.h>
-
-#ifndef ST_REPORT_ERROR
-#if ST_DEBUG
-#define ST_REPORT_ERROR(msg)     							\
-{							   								\
-	::_wassert(ST_WIDE(msg), ST_WIDE(__FILE__), __LINE__);	\
-}				
+#ifdef _DEBUG
+	#if defined(UNICODE )|| defined(_UNICODE)
+		#define assert(expr) if(!(expr)) { _wassert(_CRT_WIDE(#expr), _CRT_WIDE(__FILE__), __LINE__); _debugbreak(); }
+	#else
+		#define assert(expr) if(!(expr)) { _assert(#expr, __FILE__, __LINE__); }
+	#endif
 #else
-#define ST_REPORT_ERROR(msg) 
+	#define assert(expr) ((void)0)
 #endif
-#endif // !ST_REPORT_ERROR
-
-#ifndef ST_VERIFY
-#define ST_VERIFY(expr, msg)                                 \
-if (!(expr)) {                                               \
-	ST_REPORT_ERROR(msg);                                    \
-}                                   
-#endif // !ST_VERIFY
-
-#ifndef ST_ASSERT
-#define ST_ASSERT(expr, msg) ST_VERIFY(expr, msg)
-#endif // !ST_ASSERT

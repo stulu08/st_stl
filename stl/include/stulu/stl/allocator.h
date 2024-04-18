@@ -1,20 +1,25 @@
 #pragma once
-#include "cstddef.h"
-#include "assert.h"
-#include "cstring.h"
+#include "stulu/stl/cstddef.h"
+#include "stulu/stl/cassert.h"
+#include "stulu/stl/cstring.h"
 
 ST_STL_BEGIN
 
 // for implementation
 #if ST_ADDITIONAL_FEATURES && !defined(ST_ADDITIONAL_ALLOCATOR_FEATURES)
-#define ST_ADDITIONAL_ALLOCATOR_FEATURES 1
+#define ST_ADDITIONAL_ALLOCATOR_FEATURES 0
 #endif // ST_ADDITIONAL_FEATURES
 
 template<class T>
 class allocator {
 public:
 	using value_type = T;
-	using size_type = ST_DEFAULT_SIZE_TYPE;
+	using pointer = T*;
+	using const_pointer = const T*;
+	using refrence = T&;
+	using const_refrence = const T&;
+	using size_type = size_t;
+	using difference_type = ptrdiff_t;
 
 	ST_CONSTEXPR allocator() ST_NOEXCEPT {}
 	ST_CONSTEXPR allocator(const allocator&) ST_NOEXCEPT = default;
@@ -107,7 +112,12 @@ template<>
 class allocator<void> {
 public:
 	using value_type = void;
-	using size_type = ST_DEFAULT_SIZE_TYPE;
+	using pointer = void*;
+	using const_pointer = const void*;
+	using refrence = void;
+	using const_refrence = const void;
+	using size_type = size_t;
+	using difference_type = ptrdiff_t;
 
 	ST_CONSTEXPR allocator() ST_NOEXCEPT {}
 	ST_CONSTEXPR allocator(const allocator&) ST_NOEXCEPT = default;

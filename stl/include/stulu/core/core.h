@@ -82,10 +82,6 @@
 #define ST_NOEXCEPT noexcept
 #endif // !ST_NOEXCEPT
 
-#ifndef ST_DEFAULT_SIZE_TYPE
-#define ST_DEFAULT_SIZE_TYPE size_t
-#endif // !ST_DEFAULT_SIZE_TYPE
-
 #ifndef ST_C_STD
 #define ST_C_STD ::
 #endif // !ST_C_STD

@@ -1,15 +1,15 @@
 #pragma once
-#include "cstddef.h"
-#include "assert.h"
-#include "memory.h"
+#include "stulu/stl/cstddef.h"
+#include "stulu/stl/cassert.h"
+#include "stulu/stl/memory.h"
 
 ST_STL_BEGIN
 
-template<class T, ST_DEFAULT_SIZE_TYPE Size>
+template<class T, size_t Size>
 class array {
 public:
 	using element_type = T;
-    using size_type = ST_DEFAULT_SIZE_TYPE;
+    using size_type = size_t;
 
     ST_CONSTEXPR void fill(const element_type& value) ST_NOEXCEPT {
         if constexpr (Size < 0)

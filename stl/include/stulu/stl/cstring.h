@@ -1,5 +1,5 @@
 #pragma once
-#include "cstddef.h"
+#include "stulu/stl/cstddef.h"
 
 #include <string.h>
 ST_STL_BEGIN
@@ -34,7 +34,7 @@ using ST_C_STD strxfrm;
 // 1 - destination is null
 // 2 - source is null
 // 3 - destinationSize < sourceSize
-ST_INLINE int memcpy_s(void* destination, ST_DEFAULT_SIZE_TYPE destinationSize, const void* source, ST_DEFAULT_SIZE_TYPE sourceSize) {
+ST_INLINE int memcpy_s(void* destination, size_t destinationSize, const void* source, size_t sourceSize) {
     if (sourceSize == 0)
         return 0;
     if (destination == nullptr)
@@ -57,7 +57,7 @@ ST_INLINE int memcpy_s(void* destination, ST_DEFAULT_SIZE_TYPE destinationSize, 
 // 1 - destination is null
 // 2 - source is null
 // 3 - destinationSize < sourceSize
-ST_INLINE int memmove_s(void* destination, ST_DEFAULT_SIZE_TYPE destinationSize, const void* source, ST_DEFAULT_SIZE_TYPE sourceSize) {
+ST_INLINE int memmove_s(void* destination, size_t destinationSize, const void* source, size_t sourceSize) {
     if (sourceSize == 0)
         return 0;
     if (destination == nullptr)

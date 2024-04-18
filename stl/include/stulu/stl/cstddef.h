@@ -16,4 +16,6 @@ using void_t = void;
 using ST_C_STD ptrdiff_t;
 using ST_C_STD size_t;
 
+struct mbstate_t;
+
 ST_STL_END

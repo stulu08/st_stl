@@ -1,6 +1,6 @@
 #pragma once
-#include "cstddef.h"
-#include "type_traits.h"
+#include "stulu/stl/cstddef.h"
+#include "stulu/stl/type_traits.h"
 
 ST_STL_BEGIN
 
@@ -67,7 +67,7 @@ public:
 		if (this == ST_STL addressof(other)) {
 			return *this;
 		}
-		reset(other.release())
+		reset(other.release());
 		return *this;
 	}
 	ST_INLINE unique_ptr& operator=(nullptr_t) ST_NOEXCEPT {
@@ -132,7 +132,7 @@ public:
 	using element_type = T;
 	// Deleter, the function object or lvalue reference to function or to function object, to be called from the destructor
 	using deleter_type = D;
-	using size_type = ST_DEFAULT_SIZE_TYPE;
+	using size_type = size_t;
 
 	ST_CONSTEXPR unique_ptr() ST_NOEXCEPT
 		: m_ptr(nullptr) {}

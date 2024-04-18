@@ -29,9 +29,8 @@ TEST_F(ArrayTest, At) {
     for (int i = 0; i < 5; ++i) {
         EXPECT_EQ(i + 1, arr.at(i));
     }
-
     // Check out of bounds access
-    //EXPECT_THROW(arr.at(5), std::out_of_range);
+    //EXPECT_THROW(arr.at(7), std::out_of_range);
 }
 
 // Test case to check front and back functions

@@ -1,8 +1,8 @@
 #pragma once
-#include "cstddef.h"
-#include "assert.h"
-#include "type_traits.h"
-#include "memory.h"
+#include "stulu/stl/cstddef.h"
+#include "stulu/stl/cassert.h"
+#include "stulu/stl/type_traits.h"
+#include "stulu/stl/memory.h"
 
 ST_STL_BEGIN
 
@@ -32,7 +32,7 @@ public:
 	using value_type = T;
 	using allocator_type = A;
 	using storage_type = ST_STL internal::VectorStorage<T>;
-	using size_type = ST_DEFAULT_SIZE_TYPE;
+	using size_type = size_t;
 
 	ST_INLINE ST_CONSTEXPR vector() ST_NOEXCEPT {}
 	ST_INLINE vector(const vector& copy) {
