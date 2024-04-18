@@ -1,8 +1,3 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: MSBuild
 
 on:
@@ -12,14 +7,8 @@ on:
     branches: [ "main" ]
 
 env:
-  # Path to the solution file relative to the root of the project.
   SOLUTION_FILE_PATH: .
-
-  # Configuration type to build.
-  # You can convert this to a build matrix if you need coverage of multiple configuration types.
-  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
   BUILD_CONFIGURATION: Release
-  PREMAKE_VERSION: 5.0.0-beta2
 permissions:
   contents: read
 
@@ -30,10 +19,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Setup premake
-      uses: abel0b/setup-premake@v2.3
-      with:
-        version: "5.0.0-beta2"
+    - name: Add Premake to PATH
+      run: Add-Content "./vendor/premake"
         
     - name: Generate build files
       run: premake5 vs2022
