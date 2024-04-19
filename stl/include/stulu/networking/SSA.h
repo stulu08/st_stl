@@ -72,7 +72,7 @@ namespace networking {
 			s_instance = stulu::unique_ptr<SSA>(new SSA());
 		}
 
-		static ST_INLINE int Cleanup() ST_NOEXCEPT {
+		static ST_INLINE void Cleanup() ST_NOEXCEPT {
 			ST_ASSERT(s_instance != nullptr, "SSA has not been started!");
 			s_instance.reset();
 		}
