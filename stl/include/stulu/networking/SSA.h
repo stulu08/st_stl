@@ -1,39 +1,41 @@
 #pragma once
 #include "stulu/core/platform.h"
-#ifdef ST_WINDOWS
-	#undef UNICODE
-	#define WIN32_LEAN_AND_MEAN
-	#include <windows.h>
-	#include <winsock2.h>
-	#include <ws2tcpip.h>
-	#pragma comment (lib, "Ws2_32.lib")
-#elif defined(ST_LINUX)
-	#include <sys/types.h>
-	#include <sys/socket.h>
-	#include <netinet/in.h>
-	#include <arpa/inet.h>
-	#include <netdb.h>
-	typedef int SOCKET;
-	#define INVALID_SOCKET -1
-	#define SOCKET_ERROR -1
-
-	#define WSADESCRIPTION_LEN      256
-	#define WSASYS_STATUS_LEN       128
-	struct WSAData {
-		unsigned short          wVersion;
-		unsigned short          wHighVersion;
-		unsigned short          iMaxSockets;
-		unsigned short          iMaxUdpDg;
-		char* lpVendorInfo;
-		char                    szDescription[WSADESCRIPTION_LEN + 1];
-		char                    szSystemStatus[WSASYS_STATUS_LEN + 1];
-	};
-#endif
-
+#include "stulu/stl/cassert.h"
 #include "stulu/stl/memory.h"
 #include "stulu/stl/cstdint.h"
 
 #define MAKE_SSA_VERSION(a, b) ((uint16_t)(((uint8_t)(((uint64_t)(a)) & 0xff)) | ((uint16_t)((uint8_t)(((uint64_t)(b)) & 0xff))) << 8))
+
+#ifdef ST_WINDOWS
+#undef UNICODE
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#pragma comment (lib, "Ws2_32.lib")
+#elif defined(ST_LINUX)
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+typedef int SOCKET;
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+
+#define WSADESCRIPTION_LEN      256
+#define WSASYS_STATUS_LEN       128
+struct WSAData {
+	unsigned short          wVersion;
+	unsigned short          wHighVersion;
+	unsigned short          iMaxSockets;
+	unsigned short          iMaxUdpDg;
+	char* lpVendorInfo;
+	char                    szDescription[WSADESCRIPTION_LEN + 1];
+	char                    szSystemStatus[WSASYS_STATUS_LEN + 1];
+};
+#endif
 
 ST_STL_BEGIN
 namespace networking {
@@ -61,7 +63,7 @@ namespace networking {
 	public:
 		ST_INLINE ~SSA() {
 #ifdef ST_WINDOWS
-			ST_ASSERT(WSACleanup == 0, "SSA cleanup failed");
+			ST_ASSERT(WSACleanup() == 0, "SSA cleanup failed");
 #endif
 		}
 
@@ -93,4 +95,5 @@ namespace networking {
 		ST_STL_API static stulu::unique_ptr<SSA> s_instance;
 	};
 }
+#undef MAKE_SSA_VERSION
 ST_STL_END

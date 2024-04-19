@@ -7,7 +7,9 @@ ST_STL_BEGIN
 namespace networking {
 	class address {
 	public:
-		ST_INLINE address(const string_type& node, const string_type& port, const address_info& hintInfo = address_info())
+		ST_CONSTEXPR address() ST_NOEXCEPT
+			: m_node(""), m_port(""), m_addr(nullptr) { }
+		ST_INLINE address(const string_type& node, const string_type& port, const address_info& hintInfo = address_info()) ST_NOEXCEPT
 			: m_node(node), m_port(port), m_addr(nullptr) {
 			struct addrinfo hint = addrinfo();
 			hint.ai_flags = hintInfo.flags;
@@ -16,17 +18,30 @@ namespace networking {
 			hint.ai_protocol = (int32_t)hintInfo.protocol;
 			create_info(hint);
 		}
+		ST_INLINE address(const string_type& node, const string_type& port, const struct addrinfo* hint) ST_NOEXCEPT
+			: m_node(node), m_port(port), m_addr(nullptr) {
+			struct addrinfo _hint = addrinfo();
+			_hint.ai_flags = hint->ai_flags;
+			_hint.ai_family = hint->ai_family;
+			_hint.ai_socktype = hint->ai_socktype;
+			_hint.ai_protocol = hint->ai_protocol;
+			create_info(_hint);
+		}
 		
-		ST_INLINE address(const address& other)
+		ST_INLINE address(const address& other) ST_NOEXCEPT
 			: m_addr(nullptr) {
 			this->m_node = other.m_node;
 			this->m_port = other.m_port;
 
-			if(other.m_addr)
-				create_info(*other.m_addr);
+			struct addrinfo hint = addrinfo();
+			hint.ai_flags = other.info()->ai_flags;
+			hint.ai_family = other.info()->ai_family;
+			hint.ai_socktype = other.info()->ai_socktype;
+			hint.ai_protocol = other.info()->ai_protocol;
+			create_info(hint);
 		}
 
-		ST_INLINE address(address&& other) 
+		ST_INLINE address(address&& other) ST_NOEXCEPT
 			: m_node(""), m_port(""), m_addr(nullptr) {
 			swap(this->m_node, other.m_node);
 			swap(this->m_port, other.m_port);
@@ -36,6 +51,33 @@ namespace networking {
 		ST_INLINE ~address() {
 			if (m_addr)
 				freeaddrinfo(m_addr);
+		}
+
+		ST_INLINE address& operator=(const address& other) ST_NOEXCEPT {
+			if (this == ST_STL addressof(other)) {
+				return *this;
+			}
+			this->m_node = other.m_node;
+			this->m_port = other.m_port;
+			this->m_addr = nullptr;
+
+			struct addrinfo hint = addrinfo();
+			hint.ai_flags = other.info()->ai_flags;
+			hint.ai_family = other.info()->ai_family;
+			hint.ai_socktype = other.info()->ai_socktype;
+			hint.ai_protocol = other.info()->ai_protocol;
+			create_info(hint);
+
+			return *this;
+		}
+		ST_INLINE address& operator=(address&& other) ST_NOEXCEPT {
+			if (this == ST_STL addressof(other)) {
+				return *this;
+			}
+			swap(this->m_node, other.m_node);
+			swap(this->m_port, other.m_port);
+			swap(this->m_addr, other.m_addr);
+			return *this;
 		}
 
 		ST_NODISCARD ST_INLINE int status() const ST_NOEXCEPT {
@@ -56,7 +98,7 @@ namespace networking {
 		ST_NODISCARD ST_INLINE string_type port() const ST_NOEXCEPT {
 			return m_port;
 		}
-		ST_NODISCARD ST_INLINE const struct addrinfo* info() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE struct addrinfo* info() const ST_NOEXCEPT {
 			return m_addr;
 		}
 
@@ -69,7 +111,7 @@ namespace networking {
 			return re;
 		}
 	private:
-		ST_INLINE void create_info(struct addrinfo& hint) {
+		ST_INLINE void create_info(const struct addrinfo& hint) ST_NOEXCEPT {
 			m_status = getaddrinfo(m_node.c_str(), m_port.c_str(), &hint, &m_addr);
 		}
 

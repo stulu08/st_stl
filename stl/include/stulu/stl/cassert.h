@@ -1,7 +1,6 @@
 #pragma once
 #include "stulu/stl/cstddef.h"
-#include "stulu/stl/assert.h"
-
+#include <assert.h>
 
 #ifndef ST_REPORT_ERROR
 	#if ST_DEBUG

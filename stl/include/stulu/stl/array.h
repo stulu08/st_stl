@@ -52,7 +52,7 @@ public:
 #if ST_DEBUG_LEVEL > 1
         ST_ASSERT(pos < Size, "Requested index out of array capacity");
 #endif
-        return m_elements[_Pos];
+        return m_elements[pos];
     }
 
     ST_NODISCARD ST_CONSTEXPR element_type& front() ST_NOEXCEPT {
@@ -73,7 +73,7 @@ public:
         return m_elements;
     }
     ST_NODISCARD ST_CONSTEXPR const element_type* data() const ST_NOEXCEPT {
-        return m_elements
+        return m_elements;
     }
 
     ST_NODISCARD ST_CONSTEXPR size_type size() const ST_NOEXCEPT {
