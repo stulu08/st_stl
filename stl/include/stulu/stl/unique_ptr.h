@@ -115,6 +115,7 @@ public:
 		return m_ptr;
 	}
 
+
 	ST_INLINE explicit operator bool() const ST_NOEXCEPT {
 		return static_cast<bool>(m_ptr);
 	}

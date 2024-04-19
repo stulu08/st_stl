@@ -20,5 +20,4 @@
 #include "stl/vector.h"
 
 #include "storage/buffer.h"
-#include "storage/scoped_buffer.h"
-#include "storage/shared_buffer.h"
+#include "storage/static_buffer.h"

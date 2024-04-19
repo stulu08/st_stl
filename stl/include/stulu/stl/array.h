@@ -48,7 +48,7 @@ public:
 #endif
         return m_elements[pos];
     }
-    ST_NODISCARD ST_CONSTEXPR const element_type& operator[](size_type _Pos) const ST_NOEXCEPT {
+    ST_NODISCARD ST_CONSTEXPR const element_type& operator[](size_type pos) const ST_NOEXCEPT {
 #if ST_DEBUG_LEVEL > 1
         ST_ASSERT(pos < Size, "Requested index out of array capacity");
 #endif

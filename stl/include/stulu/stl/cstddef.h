@@ -15,6 +15,8 @@ using void_t = void;
 
 using ST_C_STD ptrdiff_t;
 using ST_C_STD size_t;
+ 
+enum class byte : unsigned char {};
 
 struct mbstate_t;
 
