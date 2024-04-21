@@ -65,7 +65,9 @@ public:
     using const_pointer = typename const allocator_type::const_pointer;
 
     ST_INLINE ST_CONSTEXPR basic_string() ST_NOEXCEPT 
-		: m_pointer(nullptr), m_size(0) {}
+		: m_pointer(nullptr), m_size(0) {
+		construct("", 0);
+	}
     ST_INLINE ST_CONSTEXPR basic_string(const basic_string& str) ST_NOEXCEPT {
 		construct(str.m_pointer, str.m_size);
 	}
@@ -89,7 +91,7 @@ public:
 		}
 		return assign(other.m_pointer, other.m_size);
 	}
-	ST_INLINE basic_string& operator=(basic_string&& other) {
+	ST_INLINE basic_string& operator=(basic_string&& other) ST_NOEXCEPT {
 		if (this == ST_STL addressof(other)) {
 			return *this;
 		}
@@ -211,8 +213,8 @@ private:
 		m_pointer = nullptr;
 		m_size = 0;
 	}
-	ST_INLINE void construct(const value_type* const ptr, size_type count) {
-		m_pointer = traits_type::copy(get_allocator().allocate(count + 1), ptr, count + 1);
+	ST_INLINE void construct(const value_type* const nullTerminatedPtr, size_type count) {
+		m_pointer = traits_type::copy(get_allocator().allocate(count + 1), nullTerminatedPtr, count + 1);
 		m_size = count;
 	}
 

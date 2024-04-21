@@ -2,54 +2,56 @@
 #include "stulu/core/core.h"
 #include "stulu/stl/cstdint.h"
 #include "stulu/stl/string.h"
+#include "stulu/networking/SSA.h"
 
 ST_STL_BEGIN
 namespace networking {
 	using string_type = stulu::string;
 
-	enum class address_flags : int32_t {
+	struct address_flags {
+		static ST_INLINE ST_CONSTEXPR int32_t None = 0;
 		/// <summary>
 		/// The socket address will be used in a call to the bind function.
 		/// </summary>
-		Passive = 0x01,
+		static ST_INLINE ST_CONSTEXPR int32_t Passive = AI_PASSIVE;
 		/// <summary>
 		/// The canonical name is returned in the first ai_canonname member.
 		/// </summary>
-		CanonicalName = 0x02,
+		static ST_INLINE ST_CONSTEXPR int32_t CanonicalName = AI_CANONNAME;
 		/// <summary>
 		/// The nodename parameter passed to the getaddrinfo function must be a numeric string.
 		/// </summary>
-		NumericHost = 0x04,
+		static ST_INLINE ST_CONSTEXPR int32_t NumericHost = AI_NUMERICHOST;
 		/// <summary>
 		/// <para> If this bit is set, a request is made for IPv6 addresses and IPv4 addresses with AI_V4MAPPED. </para>
 		/// <para> This option is supported on Windows Vistaand later. </para>
 		/// </summary>
-		All = 0x0100,
+		static ST_INLINE ST_CONSTEXPR int32_t All = AI_ALL;
 		/// <summary>
 		/// The getaddrinfo will resolve only if a global address is configured. The IPv6 and IPv4 loopback address is not considered a valid global address.
 		/// <para> This option is supported on Windows Vista and later. </para>
 		/// </summary>
-		AddressConfig = 0x0400,
+		static ST_INLINE ST_CONSTEXPR int32_t AddressConfig = AI_ADDRCONFIG;
 		/// <summary>
 		/// If the getaddrinfo request for IPv6 addresses fails, a name service request is made for IPv4 addresses and these addresses are converted to IPv4-mapped IPv6 address format.
 		/// <para> This option is supported on Windows Vistaand later. </para>
 		/// </summary>
-		IPv4Mapped = 0x0800,
+		static ST_INLINE ST_CONSTEXPR int32_t IPv4Mapped = AI_V4MAPPED;
 		/// <summary>
 		/// The address information can be from a non-authoritative namespace provider.
 		/// <para> This option is only supported on Windows Vista and later for the NS_EMAIL namespace.</para>
 		/// </summary>
-		NonAuthoritative = 0x04000,
+		static ST_INLINE ST_CONSTEXPR int32_t NonAuthoritative = AI_NON_AUTHORITATIVE;
 		/// <summary>
 		/// The address information is from a secure channel.
 		/// <para> This option is only supported on Windows Vistaand later for the NS_EMAIL namespace. </para>
 		/// </summary>
-		Secure = 0x08000,
+		static ST_INLINE ST_CONSTEXPR int32_t Secure = AI_SECURE;
 		/// <summary>
 		/// The address information is for a preferred name for a user.
 		/// <para >This option is only supported on Windows Vistaand later for the NS_EMAIL namespace. </para>
 		/// </summary>
-		ReturnPreferedNames = 0x010000,
+		static ST_INLINE ST_CONSTEXPR int32_t ReturnPreferedNames = AI_RETURN_PREFERRED_NAMES;
 		/// <summary>
 		/// <para> 
 		/// If a flat name (single label) is specified, getaddrinfo will return the fully 
@@ -68,12 +70,29 @@ namespace networking {
 		/// This option is supported on Windows 7, Windows Server 2008 R2, and later.
 		/// </para>
 		/// </summary>
-		FQDN = 0x00020000,
+		static ST_INLINE ST_CONSTEXPR int32_t FQDN = AI_FQDN;
 		/// <summary>
 		/// A hint to the namespace provider that the hostname being queried is being used in a file share scenario. The namespace provider may ignore this hint.
 		/// <para> This option is supported on Windows 7, Windows Server 2008 R2, and later. </para>
 		/// </summary>
-		FileServer = 0x00040000,
+		static ST_INLINE ST_CONSTEXPR int32_t FileServer = AI_FILESERVER;
+
+
+		ST_INLINE ST_CONSTEXPR address_flags() ST_NOEXCEPT
+			: m_value(None){}
+		ST_INLINE ST_CONSTEXPR address_flags(int32_t value) ST_NOEXCEPT
+			: m_value(value) {}
+
+		ST_INLINE ST_CONSTEXPR operator int32_t() const ST_NOEXCEPT {
+			return m_value;
+		}
+		ST_INLINE ST_CONSTEXPR address_flags operator=(int32_t val) ST_NOEXCEPT {
+			this->m_value = val;
+			return *this;
+		}
+
+	private:
+		int32_t m_value = None;
 	};
 	enum class socket_type : int32_t {
 		/// <summary>
@@ -84,7 +103,7 @@ namespace networking {
 		/// If the ai_family member is AF_IRDA, then SOCK_STREAM is 
 		/// the only supported socket type.
 		/// </summary>
-		Stream = 1,
+		Stream = SOCK_STREAM,
 		/// <summary>
 		/// Supports datagrams, which are connectionless, 
 		/// unreliable buffers of a fixed (typically small) maximum length. 
@@ -92,39 +111,40 @@ namespace networking {
 		/// address family (AF_INET or AF_INET6).
 		/// <para> DataGram is an alias for packets </para>
 		/// </summary>
-		DataGram = 2,
+		DataGram = SOCK_DGRAM,
 		/// <summary>
 		/// Provides a raw socket that allows an application to manipulate 
 		/// the next upper-layer protocol header. To manipulate the IPv4 header,
 		/// the IP_HDRINCL socket option must be set on the socket. To manipulate 
 		/// the IPv6 header, the IPV6_HDRINCL socket option must be set on the socket.
 		/// </summary>
-		Raw = 3,
+		Raw = SOCK_RAW,
 		/// <summary>
 		/// Provides a reliable datagram layer that does not guarantee ordering.
 		/// </summary>
-		RDM = 4,
+		RDM = SOCK_RDM,
 		/// <summary>
 		/// Provides a pseudo-stream packet based on datagrams.
 		/// </summary>
-		SequencedPacket = 5
+		SequencedPacket = SOCK_SEQPACKET
 
 	};
 	enum class address_family : int32_t {
 		// The address family is unspecified.
-		Unspecified = 0,
+		Unspecified = AF_UNSPEC,
 		/// The Internet Protocol version 4 (IPv4) address family.
-		IPv4 = 2,
+		IPv4 = AF_INET,
 		// The NetBIOS address family. This address family is only supported if a Windows Sockets provider for NetBIOS is installed.
-		NetBIOS = 17,
+		NetBIOS = AF_NETBIOS,
 		// The Internet Protocol version 6 (IPv6) address family.
-		IPv6 = 23,
+		IPv6 = AF_INET6,
 		// The Infrared Data Association (IrDA) address family. This address family is only supported if the computer has an infrared port and driver installed.
-		IrDA = 26,
+		IrDA = AF_IRDA,
 		// The Bluetooth address family. This address family is only supported if a Bluetooth adapter is installed on Windows Server 2003 or later.
-		Bluetooth = 32
+		Bluetooth = AF_BTH
 	};
 	enum class protocol : int32_t {
+		Any = 0,
 		/// <summary>
 		/// The Transmission Control Protocol (TCP). 
 		/// This is a possible value when the ai_family 
@@ -151,10 +171,10 @@ namespace networking {
 	};
 
 	struct address_info {
-		int32_t flags = 0;
+		address_flags flags = address_flags::Passive;
 		address_family family = address_family::IPv4;
 		socket_type socketType = socket_type::Stream;
-		protocol protocol = protocol::TCP;
+		protocol protocol = protocol::Any;
 		string_type canonicalName = "";
 	};
 }
