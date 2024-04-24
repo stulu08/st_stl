@@ -96,6 +96,11 @@ inline void server_test(const net::address& add) {
 
 inline void socket_tests() {
 	net::SSA::Startup();
+
+	auto ssa = net::SSA::Get();
+	std::cout << ssa.szSystemStatus << std::endl;
+	std::cout << ssa.szDescription << std::endl;
+
 	stulu::string localHostName;
 	int status = net::address::GetHostName(localHostName);
 	if (status != 0)
@@ -227,13 +232,13 @@ inline void socket_tests() {
 				auto timeEnd = std::chrono::high_resolution_clock::now(); 
 				auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(timeEnd - timeStart).count();
 				std::cout << "client> Reply from " << client.get_address().hostname().c_str() << ": bytes=" << data.size() << " time=" << duration << "ms" << std::endl;
-				Sleep(100);
+				stulu::sleep(50);
 			}
 			
 		}
 
 		std::cout << "client> Waiting for server message pool" << std::endl;
-		Sleep(1000);
+		stulu::sleep(1000);
 		for (int i = 0; i < net_msg_pool.size(); i++) {
 			std::cout << "server> " << net_msg_pool[i].c_str() << std::endl;
 		}

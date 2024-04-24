@@ -1,3 +1,5 @@
 #include "stulu/networking/SSA.h"
 
-stulu::unique_ptr<stulu::networking::SSA> stulu::networking::SSA::s_instance = nullptr;
+ST_STL_BEGIN
+unique_ptr<networking::SSA> networking::SSA::s_instance = nullptr;
+ST_STL_END

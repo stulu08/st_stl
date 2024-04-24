@@ -29,14 +29,14 @@
 	#error "Unknown platform!"
 #endif
 #ifdef _WIN32
-	#if ST_STL_DYNAMIC_LINK
-		#ifdef ST_STL_DYNAMIC_BUILD
+	#ifdef ST_STL_DYNAMIC
+		#ifdef ST_STL_BUILD
 			#define ST_STL_API __declspec(dllexport)
 		#else
 			#define ST_STL_API __declspec(dllimport)
 		#endif
 	#else
-		#define ST_STATIC_LINK
+		#define ST_STATIC
 		#define ST_STL_API
 	#endif
 #else

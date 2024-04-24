@@ -1,4 +1,5 @@
 project "stl"
+	--kind "SharedLib"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
@@ -17,6 +18,8 @@ project "stl"
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
+		--"ST_STL_BUILD",
+		--"ST_STL_DYNAMIC"
 	}
 
 	includedirs

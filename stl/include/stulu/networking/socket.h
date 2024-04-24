@@ -1,5 +1,5 @@
 #pragma once
-#include "stulu/core/core.h"
+#include "stulu/stl/platform.h"
 #include "stulu/stl/array.h"
 #include "stulu/stl/vector.h"
 #include "stulu/networking/address_info.h"
@@ -105,7 +105,7 @@ namespace networking {
 			client = ::accept(m_socket, (sockaddr*)&addInfo, &addrelen);
 
 			if (client == INVALID_SOCKET) {
-				return -1;
+				return SOCKET_ERROR;
 			}
 
 			out_sock->m_socket = client;
@@ -125,7 +125,7 @@ namespace networking {
 				// Create a SOCKET for connecting to server
 				m_socket = ::socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 				if (m_socket == INVALID_SOCKET) {
-					return -1;
+					return SOCKET_ERROR;
 				}
 				// Connect to server.
 				int result = ::connect(m_socket, ptr->ai_addr, (int)ptr->ai_addrlen);
@@ -137,7 +137,7 @@ namespace networking {
 				break;
 			}
 			if (m_socket == INVALID_SOCKET) {
-				return -2;
+				return SOCKET_ERROR;
 			}
 			return 0;
 		}
