@@ -148,19 +148,11 @@ public:
 		::operator delete(ptr, static_cast<size_t>(count));
 }
 	ST_INLINE void destroy(value_type* ptr) const {
-#if ST_DEBUG_LEVEL > 0
-		ST_ASSERT(ptr, "Can't destroy a nullptr");
-#endif
-		ptr->~value_type();
+		ST_ASSERT(false, "Can't destroy a void ptr");
 	}
 	template <class... Types>
 	ST_INLINE void construct(value_type* ptr, Types&&... Args) const {
-#if ST_DEBUG_LEVEL > 0
-		ST_ASSERT(ptr, "Can't construct a nullptr");
-#endif
-		// call constructor without allocating memory
-		// new (addres) type(constructor params);
-		::new (ptr) value_type(static_cast<Types&&>(Args)...);
+		ST_ASSERT(false, "Can't construct a void ptr");
 	}
 	ST_NODISCARD ST_INLINE ST_CONSTEXPR size_type max_size() const ST_NOEXCEPT {
 		return static_cast<size_type>(static_cast<size_t>(-1) / 1);

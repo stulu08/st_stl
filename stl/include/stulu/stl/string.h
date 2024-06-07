@@ -1,6 +1,7 @@
 #pragma once
 #include "stulu/stl/cstddef.h"
 #include "stulu/stl/allocator.h"
+#include "stulu/stl/mem.h"
 
 ST_STL_BEGIN
 
@@ -59,10 +60,10 @@ public:
     using traits_type = T;
 	using allocator_type = A;
 	using size_type = typename allocator_type::size_type;
-    using refrence = typename value_type&;
-    using const_refrence = typename const value_type&;
+    using refrence = value_type&;
+    using const_refrence = const value_type&;
     using pointer = typename allocator_type::pointer;
-    using const_pointer = typename const allocator_type::const_pointer;
+    using const_pointer = typename allocator_type::const_pointer;
 
     ST_INLINE ST_CONSTEXPR basic_string() ST_NOEXCEPT 
 		: m_pointer(nullptr), m_size(0) {

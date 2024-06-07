@@ -6,6 +6,7 @@ ST_STL_BEGIN
 template<class T>
 ST_CONSTEXPR const bool is_memset_fill_safe = sizeof(T) == sizeof(char);
 
+template <class>
 ST_INLINE_VAR ST_CONSTEXPR bool always_false = false;
 
 template <class T>
@@ -52,12 +53,12 @@ using add_rvalue_reference_t = typename add_reference<T>::rvalue;
 
 template <class T>
 add_rvalue_reference_t<T> declval() noexcept {
-    static_assert(always_false<_Ty>, "Calling declval is ill-formed, see N4950 [declval]/2.");
+    static_assert(always_false<T>, "Calling declval is ill-formed, see N4950 [declval]/2.");
 }
 
 template <class, class>
 ST_INLINE_VAR constexpr bool is_same = false;
-template <class _Ty>
-ST_INLINE_VAR constexpr bool is_same<_Ty, _Ty> = true;
+template <class T>
+ST_INLINE_VAR constexpr bool is_same<T, T> = true;
 
 ST_STL_END

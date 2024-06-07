@@ -23,35 +23,47 @@ namespace networking {
 		/// </summary>
 		static ST_INLINE ST_CONSTEXPR int32_t NumericHost = AI_NUMERICHOST;
 		/// <summary>
-		/// <para> If this bit is set, a request is made for IPv6 addresses and IPv4 addresses with AI_V4MAPPED. </para>
-		/// <para> This option is supported on Windows Vistaand later. </para>
+		/// <para> If this bit is set, a request is made for IPv6 addresses and IPv4 addresses with IPv4Mapped. </para>
 		/// </summary>
 		static ST_INLINE ST_CONSTEXPR int32_t All = AI_ALL;
 		/// <summary>
 		/// The getaddrinfo will resolve only if a global address is configured. The IPv6 and IPv4 loopback address is not considered a valid global address.
-		/// <para> This option is supported on Windows Vista and later. </para>
 		/// </summary>
 		static ST_INLINE ST_CONSTEXPR int32_t AddressConfig = AI_ADDRCONFIG;
 		/// <summary>
 		/// If the getaddrinfo request for IPv6 addresses fails, a name service request is made for IPv4 addresses and these addresses are converted to IPv4-mapped IPv6 address format.
-		/// <para> This option is supported on Windows Vistaand later. </para>
 		/// </summary>
 		static ST_INLINE ST_CONSTEXPR int32_t IPv4Mapped = AI_V4MAPPED;
 		/// <summary>
 		/// The address information can be from a non-authoritative namespace provider.
 		/// <para> This option is only supported on Windows Vista and later for the NS_EMAIL namespace.</para>
 		/// </summary>
-		static ST_INLINE ST_CONSTEXPR int32_t NonAuthoritative = AI_NON_AUTHORITATIVE;
+		static ST_INLINE ST_CONSTEXPR int32_t Nt_NonAuthoritative
+#ifdef ST_WINDOWS
+			= AI_NON_AUTHORITATIVE;
+#elif defined(ST_LINUX)
+			= None;
+#endif
 		/// <summary>
 		/// The address information is from a secure channel.
 		/// <para> This option is only supported on Windows Vistaand later for the NS_EMAIL namespace. </para>
 		/// </summary>
-		static ST_INLINE ST_CONSTEXPR int32_t Secure = AI_SECURE;
+		static ST_INLINE ST_CONSTEXPR int32_t Nt_Secure
+#ifdef ST_WINDOWS
+		= AI_SECURE;
+#elif defined(ST_LINUX)
+		= None;
+#endif
 		/// <summary>
 		/// The address information is for a preferred name for a user.
-		/// <para >This option is only supported on Windows Vistaand later for the NS_EMAIL namespace. </para>
+		/// <para >This option is only supported on Windows Vista and later for the NS_EMAIL namespace. </para>
 		/// </summary>
-		static ST_INLINE ST_CONSTEXPR int32_t ReturnPreferedNames = AI_RETURN_PREFERRED_NAMES;
+		static ST_INLINE ST_CONSTEXPR int32_t ReturnPreferedNames
+#ifdef ST_WINDOWS
+		= AI_RETURN_PREFERRED_NAMES;
+#elif defined(ST_LINUX)
+		= None;
+#endif
 		/// <summary>
 		/// <para> 
 		/// If a flat name (single label) is specified, getaddrinfo will return the fully 
@@ -66,16 +78,23 @@ namespace networking {
 		/// <para> 
 		/// Only one of the AI_FQDNand AI_CANONNAME bits can be set.The getaddrinfo function will fail if both flags are present with EAI_BADFLAGS.
 		/// </para>
-		/// <para> 
-		/// This option is supported on Windows 7, Windows Server 2008 R2, and later.
-		/// </para>
 		/// </summary>
-		static ST_INLINE ST_CONSTEXPR int32_t FQDN = AI_FQDN;
+		static ST_INLINE ST_CONSTEXPR int32_t FQDN
+#ifdef ST_WINDOWS
+		= AI_FQDN;
+#elif defined(ST_LINUX)
+		= AI_IDN;
+#endif
 		/// <summary>
 		/// A hint to the namespace provider that the hostname being queried is being used in a file share scenario. The namespace provider may ignore this hint.
 		/// <para> This option is supported on Windows 7, Windows Server 2008 R2, and later. </para>
 		/// </summary>
-		static ST_INLINE ST_CONSTEXPR int32_t FileServer = AI_FILESERVER;
+		static ST_INLINE ST_CONSTEXPR int32_t Nt_FileServer
+#ifdef ST_WINDOWS
+		= AI_FILESERVER;
+#elif defined(ST_LINUX)
+		= None;
+#endif
 
 
 		ST_INLINE ST_CONSTEXPR address_flags() ST_NOEXCEPT
@@ -134,16 +153,18 @@ namespace networking {
 		Unspecified = AF_UNSPEC,
 		/// The Internet Protocol version 4 (IPv4) address family.
 		IPv4 = AF_INET,
-		// The NetBIOS address family. This address family is only supported if a Windows Sockets provider for NetBIOS is installed.
-		NetBIOS = AF_NETBIOS,
 		// The Internet Protocol version 6 (IPv6) address family.
 		IPv6 = AF_INET6,
 		// The Infrared Data Association (IrDA) address family. This address family is only supported if the computer has an infrared port and driver installed.
 		IrDA = AF_IRDA,
+#ifdef ST_WINDOWS
+		// The NetBIOS address family. This address family is only supported if a Windows Sockets provider for NetBIOS is installed.
+		NetBIOS = AF_NETBIOS,
 		// The Bluetooth address family. This address family is only supported if a Bluetooth adapter is installed on Windows Server 2003 or later.
 		Bluetooth = AF_BTH
+#endif
 	};
-	enum class protocol : int32_t {
+	enum class address_protocol : int32_t {
 		Any = 0,
 		/// <summary>
 		/// The Transmission Control Protocol (TCP). 
@@ -174,7 +195,7 @@ namespace networking {
 		address_flags flags = address_flags::Passive;
 		address_family family = address_family::IPv4;
 		socket_type socketType = socket_type::Stream;
-		protocol protocol = protocol::Any;
+		address_protocol protocol = address_protocol::Any;
 		string_type canonicalName = "";
 	};
 }

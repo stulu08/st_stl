@@ -1,6 +1,7 @@
 #pragma once
 #include "stulu/stl/cstddef.h"
 #include "stulu/stl/type_traits.h"
+#include "stulu/stl/mem.h"
 
 ST_STL_BEGIN
 
@@ -153,8 +154,8 @@ public:
 		if (this == ST_STL addressof(other)) {
 			return *this;
 		}
-		reset(other.release())
-			return *this;
+		reset(other.release());
+		return *this;
 	}
 	ST_INLINE unique_ptr& operator=(nullptr_t) ST_NOEXCEPT {
 		reset();
@@ -265,12 +266,12 @@ ST_NODISCARD ST_INLINE bool operator!=(const nullptr_t left, const unique_ptr<T,
 
 template<class T, class D>
 ST_NODISCARD ST_INLINE bool operator<(const unique_ptr<T, D>& left, const nullptr_t right) {
-	using ptr = unique_ptr<T1, D>::pointer;
+	using ptr = typename unique_ptr<T, D>::pointer;
 	return static_cast<ptr>(left.get()) < right;
 }
 template<class T, class D>
 ST_NODISCARD ST_INLINE bool operator<(const nullptr_t left, const unique_ptr<T, D>& right) {
-	using ptr = unique_ptr<T1, D>::pointer;
+	using ptr = typename unique_ptr<T, D>::pointer;
 	return left < static_cast<ptr>(right.get());
 }
 

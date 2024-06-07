@@ -7,7 +7,7 @@
 
 ST_STL_BEGIN
 
-typedef decltype(__nullptr) nullptr_t;
+typedef decltype(nullptr) nullptr_t;
 using ST_STL nullptr_t;
 
 template <class... Types>

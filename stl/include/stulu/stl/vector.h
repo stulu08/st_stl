@@ -63,7 +63,7 @@ public:
 		if (this == ST_STL addressof(right)) {
 			return *this;
 		}
-		ST_STL swap(m_data, src.m_data);
+		ST_STL swap(this->m_data, right.m_data);
 		return *this;
 	}
 

@@ -24,7 +24,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 #include <netdb.h>
+#include <errno.h>
 
 typedef int SOCKET;
 #endif
@@ -52,8 +54,8 @@ namespace networking {
 		unsigned short          iMaxSockets = 0;
 		unsigned short          iMaxUdpDg = 0;
 		const char*				lpVendorInfo = "";
-		char                    szDescription[WSADESCRIPTION_LEN + 1];
-		char                    szSystemStatus[WSASYS_STATUS_LEN + 1];
+		char                    szDescription[SSA_DESCRIPTION_LENGTH + 1];
+		char                    szSystemStatus[SSA_STATUS_LENGTH + 1];
 }	;
 #endif
 
@@ -71,8 +73,8 @@ namespace networking {
 			m_data.wHighVersion = Version;
 			memset(m_data.szDescription, '\0', SSA_DESCRIPTION_LENGTH + 1);
 			memset(m_data.szDescription, '\0', SSA_STATUS_LENGTH + 1);
-			strcpy_s(m_data.szDescription, "WinSock 2.0 Stulu Linux Wrapper");
-			strcpy_s(m_data.szSystemStatus, "Running");
+			strcpy(m_data.szDescription, "WinSock 2.0 Stulu Linux Wrapper");
+			strcpy(m_data.szSystemStatus, "Running");
 #endif
 		}
 
@@ -93,7 +95,7 @@ namespace networking {
 			s_instance.reset();
 		}
 
-		static ST_NODISCARD ST_INLINE int GetLastError() ST_NOEXCEPT {
+		static ST_INLINE int GetLastError() ST_NOEXCEPT {
 #ifdef ST_WINDOWS
 			return WSAGetLastError();
 #else
@@ -101,11 +103,11 @@ namespace networking {
 #endif
 		}
 
-		static ST_NODISCARD ST_INLINE bool Started() ST_NOEXCEPT {
+		static ST_INLINE bool Started() ST_NOEXCEPT {
 			return s_instance.get() != nullptr;
 		}
 
-		static ST_NODISCARD ST_INLINE SSAData& Get() ST_NOEXCEPT {
+		static ST_INLINE SSAData& Get() ST_NOEXCEPT {
 			return s_instance.get()->m_data;
 		}
 	private:

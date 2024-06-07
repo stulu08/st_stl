@@ -11,7 +11,7 @@ workspace "Stulu stl"
 		"MultiProcessorCompile"
 	}
 	architecture "x86_64"
-
+	system "linux"
 	filter "configurations:Debug"
 		defines     "_DEBUG"
 
