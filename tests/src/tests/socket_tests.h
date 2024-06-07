@@ -7,6 +7,25 @@
 
 namespace net = stulu::networking;
 
+inline int simple_tcp_echo_test() {
+	net::SSA::Startup();
+	net::socket socket;
+
+	int status = socket.connect("github.com", "80");
+	if (status != 0) {
+		printf("Failed connecting: %d", net::SSA::GetLastError());
+		return -1;
+	}
+	int bytesSent = socket.send("GET / HTTP/1.1\r\n\r\n");
+	if (bytesSent == 0) {
+		printf("Failed sending: %d", net::SSA::GetLastError());
+		return -1;
+	}
+
+	stulu::string response = socket.receive();
+	printf("Received answer (%d bytes):\n%s", (int)response.size(), response.c_str());
+}
+
 inline static stulu::vector<stulu::string> net_msg_pool;
 inline static bool net_running = false;
 

@@ -141,6 +141,9 @@ namespace networking {
 			}
 			return 0;
 		}
+		ST_NODISCARD ST_INLINE int connect(const string_type& node, const string_type& port) ST_NOEXCEPT {
+			return connect(address(node, port));
+		}
 		// returns the amount of bytes received
 		ST_NODISCARD ST_INLINE int receive(buffer& buff, int* out_size = nullptr, receive_flags flags = receive_flags::None) const ST_NOEXCEPT {
 			ST_ASSERT(m_socket != INVALID_SOCKET, "Socket is invalid or empty");
@@ -170,7 +173,15 @@ namespace networking {
 				*out_size = res;
 			}
 			return res;
-
+		}
+		// returns the msg as string_type
+		ST_NODISCARD ST_INLINE string_type receive(int preAllocSize = 4096, receive_flags flags = receive_flags::None) const ST_NOEXCEPT {
+			ST_ASSERT(m_socket != INVALID_SOCKET, "Socket is invalid or empty");
+			char* buff = new char[preAllocSize];
+			int size = ::recv(m_socket, buff, preAllocSize, (int)flags);
+			string_type msg(buff, size);
+			delete[] buff;
+			return msg;
 		}
 		// returns the amount of bytes sent
 		ST_NODISCARD ST_INLINE int send(const buffer& buff, int* bytes_sent = nullptr, send_flags flags = send_flags::None) const ST_NOEXCEPT {
@@ -195,6 +206,15 @@ namespace networking {
 		ST_NODISCARD ST_INLINE int send(const char* buff, int buffSize, int* bytes_sent = nullptr, send_flags flags = send_flags::None) const ST_NOEXCEPT {
 			ST_ASSERT(m_socket != INVALID_SOCKET, "Socket is invalid or empty");
 			int res = ::send(m_socket, buff, buffSize, (int)flags);
+			if (bytes_sent) {
+				*bytes_sent = res;
+			}
+			return res;
+		}
+		// returns the amount of bytes sent
+		ST_NODISCARD ST_INLINE int send(const string_type msg, int* bytes_sent = nullptr, send_flags flags = send_flags::None) const ST_NOEXCEPT {
+			ST_ASSERT(m_socket != INVALID_SOCKET, "Socket is invalid or empty");
+			int res = ::send(m_socket, msg.c_str(), (int)msg.size(), (int)flags);
 			if (bytes_sent) {
 				*bytes_sent = res;
 			}

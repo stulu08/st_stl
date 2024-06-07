@@ -81,6 +81,10 @@ public:
 		: m_pointer(nullptr), m_size(0) {
 		construct(ptr, traits_type::length(ptr));
 	}
+	ST_INLINE ST_CONSTEXPR basic_string(const value_type* ptr, size_type count) ST_NOEXCEPT
+		: m_pointer(nullptr), m_size(count) {
+		construct_andTerminate(ptr, count);
+	}
 
 	ST_INLINE ~basic_string() ST_NOEXCEPT {
 		deallocate();
@@ -218,6 +222,11 @@ private:
 		m_pointer = traits_type::copy(get_allocator().allocate(count + 1), nullTerminatedPtr, count + 1);
 		m_size = count;
 	}
+	ST_INLINE void construct_andTerminate(const value_type* const nonNullTerminatedPtr, size_type count) {
+		m_pointer = traits_type::copy(get_allocator().allocate(count + 1), nonNullTerminatedPtr, count + 1);
+		m_pointer[count] = '\0';
+		m_size = count;
+	}
 
 	pointer m_pointer;
 	size_type m_size;
@@ -236,7 +245,16 @@ ST_NODISCARD ST_CONSTEXPR bool operator==(const C* const left, const basic_strin
 	return right._Equal(left);
 }
 
-
 using string = basic_string<char, char_traits<char>, allocator<char>>;
+
+namespace literals {
+	namespace string_literals {
+		ST_NODISCARD ST_INLINE string operator""s(const char* ptr, size_t count) {
+			return string(ptr, count);
+		}
+	}
+}
+
+
 
 ST_STL_END

@@ -115,6 +115,7 @@ namespace networking {
  
 		ST_STL_API static unique_ptr<SSA> s_instance;
 	};
+	using ssa = SSA;
 }
 #undef MAKE_SSA_VERSION
 ST_STL_END

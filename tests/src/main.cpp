@@ -10,10 +10,11 @@
 #include <string>
 #include <iostream>
 
+namespace net = stulu::networking;
+
 int main(int argc, char** argv) {
+	//return simple_tcp_echo_test();
 	
-	socket_tests();
-	//return 0;
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
