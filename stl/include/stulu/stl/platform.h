@@ -20,3 +20,6 @@ ST_INLINE void sleep(const size_t milliseconds) {
 }
 
 ST_STL_END
+
+#include "linux/platform.h"
+#include "windows/platform.h"

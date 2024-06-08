@@ -1,4 +1,4 @@
-#include "stulu/stl/platform.h"
+#pragma once
 
 #ifdef ST_WINDOWS
 #include <Windows.h>

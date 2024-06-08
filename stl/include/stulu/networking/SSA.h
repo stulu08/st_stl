@@ -62,9 +62,22 @@ namespace networking {
 	// Stulu Socket Application
 	class SSA {
 	public:
-	private:
 		ST_INLINE SSA() ST_NOEXCEPT
 			: m_data(SSAData{}) {
+		}
+
+	public:
+		ST_INLINE static stulu::unique_ptr<SSA> Create() {
+			SSA* ssa = new SSA();
+			ssa->startup();
+			return std::move(stulu::unique_ptr<SSA>(ssa));
+		}
+
+		ST_INLINE ~SSA() {
+			cleanup();
+		}
+
+		ST_INLINE void startup() ST_NOEXCEPT {
 			const unsigned short Version = MAKE_SSA_VERSION(2, 2);
 #ifdef ST_WINDOWS
 			ST_ASSERT(WSAStartup((WORD)Version, &m_data) == 0, "SSA startup failed");
@@ -78,24 +91,13 @@ namespace networking {
 #endif
 		}
 
-	public:
-		ST_INLINE ~SSA() {
+		ST_INLINE void cleanup() ST_NOEXCEPT {
 #ifdef ST_WINDOWS
 			ST_ASSERT(WSACleanup() == 0, "SSA cleanup failed");
 #endif
 		}
 
-		static ST_INLINE void Startup() ST_NOEXCEPT {
-			ST_ASSERT(s_instance == nullptr, "SSA has already been started!");
-			s_instance = stulu::unique_ptr<SSA>(new SSA());
-		}
-
-		static ST_INLINE void Cleanup() ST_NOEXCEPT {
-			ST_ASSERT(s_instance != nullptr, "SSA has not been started!");
-			s_instance.reset();
-		}
-
-		static ST_INLINE int GetLastError() ST_NOEXCEPT {
+		static ST_INLINE int getLastError() ST_NOEXCEPT {
 #ifdef ST_WINDOWS
 			return WSAGetLastError();
 #else
@@ -103,17 +105,11 @@ namespace networking {
 #endif
 		}
 
-		static ST_INLINE bool Started() ST_NOEXCEPT {
-			return s_instance.get() != nullptr;
-		}
-
-		static ST_INLINE SSAData& Get() ST_NOEXCEPT {
-			return s_instance.get()->m_data;
+		ST_INLINE SSAData& get() ST_NOEXCEPT {
+			return m_data;
 		}
 	private:
 		SSAData m_data;
- 
-		ST_STL_API static unique_ptr<SSA> s_instance;
 	};
 	using ssa = SSA;
 }
