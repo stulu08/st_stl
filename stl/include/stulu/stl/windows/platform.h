@@ -1,7 +1,13 @@
 #pragma once
 
 #ifdef ST_WINDOWS
-#include <Windows.h>
+
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define WIN32_LEAN_AND_MEAN
+
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 
 ST_STL_BEGIN
 

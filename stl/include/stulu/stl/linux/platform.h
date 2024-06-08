@@ -2,7 +2,13 @@
 
 #ifdef ST_LINUX
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <unistd.h>
+#include <netdb.h>
+#include <errno.h>
 
 ST_STL_BEGIN
 

@@ -13,7 +13,7 @@
 namespace net = stulu::networking;
 
 int main(int argc, char** argv) {
-	//return simple_tcp_echo_test();
+	return simple_tcp_echo_test();
 	
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();

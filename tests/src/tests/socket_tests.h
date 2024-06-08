@@ -7,30 +7,32 @@
 
 namespace net = stulu::networking;
 
-static stulu::unique_ptr<net::SSA> ssa;
 
 inline int simple_tcp_echo_test() {
-	ssa = net::SSA::Create();
+	auto SSAData = net::SSA::Startup();
 
 	net::socket socket;
 
 	int status = socket.connect("github.com", "80");
 	if (status != 0) {
-		printf("Failed connecting: %d", ssa->getLastError());
-		ssa->cleanup();
+		printf("Failed connecting: %d", net::SSA::GetLastError());
+		net::SSA::Cleanup();
 		return -1;
 	}
 	int bytesSent = socket.send("GET / HTTP/1.1\r\n\r\n");
 	if (bytesSent == 0) {
-		printf("Failed sending: %d", ssa->getLastError());
-		ssa->cleanup();
+		printf("Failed sending: %d", net::SSA::GetLastError());
+		net::SSA::Cleanup();
 		return -1;
 	}
 
 	stulu::string response = socket.receive();
 	printf("Received answer (%d bytes):\n%s", (int)response.size(), response.c_str());
 	
-	ssa->cleanup();
+	socket.close();
+
+	net::SSA::Cleanup();
+	return 0;
 }
 
 inline static stulu::vector<stulu::string> net_msg_pool;
@@ -121,15 +123,15 @@ inline void server_test(const net::address& add) {
 }
 
 inline void socket_tests() {
-	ssa = net::SSA::Create();
+	auto SSAData = net::SSA::Startup();
 
-	std::cout << ssa->get().szSystemStatus << std::endl;
-	std::cout << ssa->get().szDescription << std::endl;
+	std::cout << SSAData->szSystemStatus << std::endl;
+	std::cout << SSAData->szDescription << std::endl;
 
 	stulu::string localHostName;
 	int status = net::address::GetHostName(localHostName);
 	if (status != 0)
-		std::cout << ssa->getLastError();
+		std::cout << net::SSA::GetLastError();
 	
 	const stulu::string remoteAddress = localHostName;
 	const stulu::string port = "80";
@@ -171,7 +173,7 @@ inline void socket_tests() {
 			client = net::socket();
 			error = client.connect(net::address(remoteAddress, port));
 			if (error != 0) {
-				std::cout << "client> Client connect failed: " << ssa->getLastError() << std::endl;
+				std::cout << "client> Client connect failed: " << net::SSA::GetLastError() << std::endl;
 				continue;
 			}
 			std::cout << "client> Client connected to: " << client.get_address().hostname().c_str() << ':' << client.get_address().port().c_str() << std::endl;
@@ -196,7 +198,7 @@ inline void socket_tests() {
 				std::cout << "client> Client could not send to server" << std::endl;
 			}
 			else if (bytesSent == INVALID_SOCKET) {
-				std::cout << "client> Error while sending data" << ssa->getLastError() << std::endl;
+				std::cout << "client> Error while sending data" << net::SSA::GetLastError() << std::endl;
 			}
 		}
 
@@ -212,12 +214,12 @@ inline void socket_tests() {
 				std::cout << "client> Client could not send EOT to server" << std::endl;
 			}
 			else if (error == INVALID_SOCKET) {
-				std::cout << "client> Error while sending EOT" << ssa->getLastError() << std::endl;
+				std::cout << "client> Error while sending EOT" << net::SSA::GetLastError() << std::endl;
 			}
 
 			error = client.close();
 			if (error != 0) {
-				std::cout << "client> Client close failed: " << ssa->getLastError() << std::endl;
+				std::cout << "client> Client close failed: " << net::SSA::GetLastError() << std::endl;
 				continue;
 			}
 		}
@@ -236,7 +238,7 @@ inline void socket_tests() {
 					break;
 				}
 				else if (error == INVALID_SOCKET) {
-					std::cout << "client> Error while sending ping" << ssa->getLastError() << std::endl;
+					std::cout << "client> Error while sending ping" << net::SSA::GetLastError() << std::endl;
 					break;
 				}
 				net::array<1> data;
@@ -246,7 +248,7 @@ inline void socket_tests() {
 					break;
 				}
 				else if (error == INVALID_SOCKET) {
-					std::cout << "client> Error while receiving ping answer from server" << ssa->getLastError() << std::endl;
+					std::cout << "client> Error while receiving ping answer from server" << net::SSA::GetLastError() << std::endl;
 					break;
 				}
 
@@ -271,5 +273,5 @@ inline void socket_tests() {
 	}
 
 
-	ssa->cleanup();
+	net::SSA::Cleanup();
 }
