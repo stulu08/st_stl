@@ -7,13 +7,14 @@
 
 namespace net = stulu::networking;
 
+#include <stulu/http/parser.h>
 
 inline int simple_tcp_echo_test() {
 	auto SSAData = net::SSA::Startup();
 
 	net::socket socket;
 
-	int status = socket.connect("github.com", "80");
+	int status = socket.connect("google.com", "80");
 	if (status != 0) {
 		printf("Failed connecting: %d", net::SSA::GetLastError());
 		net::SSA::Cleanup();
@@ -29,10 +30,10 @@ inline int simple_tcp_echo_test() {
 	stulu::string response = socket.receive();
 	printf("Received answer (%d bytes):\n%s", (int)response.size(), response.c_str());
 	
-	socket.close();
+	status = socket.close();
 
 	net::SSA::Cleanup();
-	return 0;
+	return status;
 }
 
 inline static stulu::vector<stulu::string> net_msg_pool;
@@ -61,6 +62,7 @@ inline void server_test(const net::address& add) {
 		NET_LOG(stream.str().c_str());
 		return;
 	}
+
 
 	net::buffer data;
 	data.resize(UINT16_MAX);

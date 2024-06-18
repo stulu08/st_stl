@@ -69,6 +69,10 @@ public:
 		: m_pointer(nullptr), m_size(0) {
 		construct("", 0);
 	}
+	ST_INLINE ST_CONSTEXPR basic_string(stulu::nullptr_t) ST_NOEXCEPT
+		: m_pointer(nullptr), m_size(0) {
+		construct("", 0);
+	}
     ST_INLINE ST_CONSTEXPR basic_string(const basic_string& str) ST_NOEXCEPT {
 		construct(str.m_pointer, str.m_size);
 	}
@@ -83,7 +87,13 @@ public:
 	}
 	ST_INLINE ST_CONSTEXPR basic_string(const value_type* ptr, size_type count) ST_NOEXCEPT
 		: m_pointer(nullptr), m_size(count) {
-		construct_andTerminate(ptr, count);
+		construct(ptr, count);
+		null_termiate();
+	}
+	ST_INLINE ST_CONSTEXPR basic_string(size_type count) ST_NOEXCEPT
+		: m_pointer(nullptr), m_size(count) {
+		allocate(count);
+		null_termiate();
 	}
 
 	ST_INLINE ~basic_string() ST_NOEXCEPT {
@@ -108,6 +118,16 @@ public:
 		return assign(ptr);
 	}
 	
+	ST_INLINE basic_string& operator+=(const basic_string& right) {
+		return this->append(right);
+	}
+	ST_INLINE basic_string& operator+=(const value_type* right) {
+		return this->append(right);
+	}
+	ST_INLINE basic_string& operator+=(value_type right) {
+		return this->append(right);
+	}
+
 	ST_INLINE basic_string& assign(const value_type* const ptr) {
 		return assign(ptr, traits_type::length(ptr));
 	}
@@ -117,6 +137,64 @@ public:
 			allocate(count);
 		}
 		m_pointer = traits_type::copy(m_pointer, ptr, count + 1);
+		return *this;
+	}
+
+	ST_INLINE basic_string& append(const basic_string& str) {
+		return append(str.c_str(), str.length());
+	}
+	ST_INLINE basic_string& append(const value_type* str) {
+		return append(str, traits_type::length(str));
+	}
+	ST_INLINE basic_string& append(const value_type* str, size_t subpos, size_t sublen) {
+		return append(str + subpos, sublen);
+	}
+	ST_INLINE basic_string& append(const value_type* appendPtr, size_t appendSize) {
+		if (appendSize == 0) {
+			return *this;
+		}
+
+		const size_t oldSize = length();
+		const size_t newSize = oldSize + appendSize;
+
+		pointer oldPtr = m_pointer;
+		allocate(newSize);
+
+		(void)traits_type::copy(m_pointer, oldPtr, oldSize);
+		(void)traits_type::copy(m_pointer + oldSize, appendPtr, appendSize);
+		null_termiate();
+
+		get_allocator().deallocate(oldPtr, oldSize + 1);
+
+		return *this;
+	}
+	ST_INLINE basic_string& append(value_type c) {
+		const size_t oldSize = length();
+
+		pointer oldPtr = m_pointer;
+		allocate(oldSize + 1);
+
+		m_pointer = traits_type::copy(m_pointer, oldPtr, oldSize);
+		m_pointer[oldSize] = c;
+		null_termiate();
+
+		get_allocator().deallocate(oldPtr, oldSize + 1);
+
+		return *this;
+	}
+	ST_INLINE basic_string& append(size_t num, value_type c) {
+		const size_t oldSize = length();
+
+		pointer oldPtr = m_pointer;
+		allocate(oldSize + num);
+
+		m_pointer = traits_type::copy(m_pointer, oldPtr, oldSize);
+		for(size_t i = 0; i < num; i++)
+			m_pointer[oldSize + i] = c;
+		null_termiate();
+
+		get_allocator().deallocate(oldPtr, oldSize + 1);
+
 		return *this;
 	}
 
@@ -218,13 +296,13 @@ private:
 		m_pointer = nullptr;
 		m_size = 0;
 	}
-	ST_INLINE void construct(const value_type* const nullTerminatedPtr, size_type count) {
-		m_pointer = traits_type::copy(get_allocator().allocate(count + 1), nullTerminatedPtr, count + 1);
-		m_size = count;
+
+	ST_INLINE void null_termiate() {
+		m_pointer[m_size] = '\0';
 	}
-	ST_INLINE void construct_andTerminate(const value_type* const nonNullTerminatedPtr, size_type count) {
-		m_pointer = traits_type::copy(get_allocator().allocate(count + 1), nonNullTerminatedPtr, count + 1);
-		m_pointer[count] = '\0';
+
+	ST_INLINE void construct(const value_type* const ptr, size_type count) {
+		m_pointer = traits_type::copy(get_allocator().allocate(count + 1), ptr, count + 1);
 		m_size = count;
 	}
 
@@ -243,6 +321,35 @@ ST_NODISCARD ST_CONSTEXPR bool operator==(const basic_string<C, T, A>& left, con
 template <class C, class T = char_traits<C>, class A = allocator<C>>
 ST_NODISCARD ST_CONSTEXPR bool operator==(const C* const left, const basic_string<C, T, A>& right) ST_NOEXCEPT {
 	return right._Equal(left);
+}
+
+template <class C, class T = char_traits<C>, class A = allocator<C>>
+ST_NODISCARD ST_CONSTEXPR bool operator!=(const basic_string<C, T, A>& left, const basic_string<C, T, A>& right) ST_NOEXCEPT {
+	return !(left == right);
+}
+template <class C, class T = char_traits<C>, class A = allocator<C>>
+ST_NODISCARD ST_CONSTEXPR bool operator!=(const basic_string<C, T, A>& left, const C* const right) ST_NOEXCEPT {
+	return !(left == right);
+}
+template <class C, class T = char_traits<C>, class A = allocator<C>>
+ST_NODISCARD ST_CONSTEXPR bool operator!=(const C* const left, const basic_string<C, T, A>& right) ST_NOEXCEPT {
+	return !(left == right);
+}
+
+template <class C, class T = char_traits<C>, class A = allocator<C>>
+ST_NODISCARD ST_CONSTEXPR basic_string<C, T, A> operator+(const basic_string<C, T, A>& left, const basic_string<C, T, A>& right) {
+	stulu::string str(left);
+	return str.append(right);
+}
+template <class C, class T = char_traits<C>, class A = allocator<C>>
+ST_NODISCARD ST_CONSTEXPR basic_string<C, T, A> operator+(const basic_string<C, T, A>& left, const C* const right) {
+	stulu::string str(left);
+	return str.append(right);
+}
+template <class C, class T = char_traits<C>, class A = allocator<C>>
+ST_NODISCARD ST_CONSTEXPR basic_string<C, T, A> operator+(const basic_string<C, T, A>& left, C right) {
+	stulu::string str(left);
+	return str.append(right);
 }
 
 using string = basic_string<char, char_traits<char>, allocator<char>>;

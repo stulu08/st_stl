@@ -123,3 +123,42 @@ TEST_F(StringTest, AssignConstChar) {
     EXPECT_EQ('H', str.at(0));
     EXPECT_EQ('o', str.at(4));
 }
+
+// Test case to check append function on an empty string with const char*
+TEST_F(StringTest, EmptyAppendConstChar) {
+    str.append("Hello");
+    str.append(" ");
+    str.append("World");
+
+    EXPECT_EQ(str, "Hello World");
+    EXPECT_EQ(str.length(), 11);
+}
+
+// Test case to check append function with substring of a const char*
+TEST_F(StringTest, SublenAppend) {
+    str = "Hello";
+    str.append("Hello World", 5, 6) ;
+
+    EXPECT_EQ(str, "Hello World");
+    EXPECT_EQ(str.length(), 11);
+}
+
+// Test case to check append function
+TEST_F(StringTest, AppendConstChar) {
+    str = "Hello";
+    str.append(' ');
+    str.append(stulu::string("World"));
+    str.append((" from C++"));
+
+    EXPECT_EQ(str, "Hello World from C++");
+    EXPECT_EQ(str.length(), 20);
+}
+
+// Test case to check num char append function
+TEST_F(StringTest, AppendChars) {
+    str = "Hello";
+    str.append(5, ' ');
+
+    EXPECT_EQ(str, "Hello     ");
+    EXPECT_EQ(str.length(), 10);
+}
