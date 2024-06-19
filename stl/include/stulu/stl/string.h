@@ -338,17 +338,17 @@ ST_NODISCARD ST_CONSTEXPR bool operator!=(const C* const left, const basic_strin
 
 template <class C, class T = char_traits<C>, class A = allocator<C>>
 ST_NODISCARD ST_CONSTEXPR basic_string<C, T, A> operator+(const basic_string<C, T, A>& left, const basic_string<C, T, A>& right) {
-	stulu::string str(left);
+	basic_string<char, char_traits<char>, allocator<char>> str(left);
 	return str.append(right);
 }
 template <class C, class T = char_traits<C>, class A = allocator<C>>
 ST_NODISCARD ST_CONSTEXPR basic_string<C, T, A> operator+(const basic_string<C, T, A>& left, const C* const right) {
-	stulu::string str(left);
+	basic_string<char, char_traits<char>, allocator<char>> str(left);
 	return str.append(right);
 }
 template <class C, class T = char_traits<C>, class A = allocator<C>>
 ST_NODISCARD ST_CONSTEXPR basic_string<C, T, A> operator+(const basic_string<C, T, A>& left, C right) {
-	stulu::string str(left);
+	basic_string<char, char_traits<char>, allocator<char>> str(left);
 	return str.append(right);
 }
 
@@ -356,7 +356,7 @@ using string = basic_string<char, char_traits<char>, allocator<char>>;
 
 namespace literals {
 	namespace string_literals {
-		ST_NODISCARD ST_INLINE string operator""s(const char* ptr, size_t count) {
+		ST_NODISCARD ST_INLINE string operator""_s(const char* ptr, size_t count) {
 			return string(ptr, count);
 		}
 	}

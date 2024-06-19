@@ -14,7 +14,7 @@ namespace net = stulu::networking;
 
 int main(int argc, char** argv) {
 	stulu::http::request request = R"(
-GET / HTTP/1.1
+POST / HTTP/1.1
 User-Agent: Mozilla/4.0 (compatible; MSIE5.01; Windows NT)
 Host: www.tutorialspoint.com
 Content-Type: application/x-www-form-urlencoded
