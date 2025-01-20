@@ -27,21 +27,12 @@ project "googletest"
 	filter "system:windows"
 		systemversion "latest"
 		defines "GTEST_OS_WINDOWS"
-		buildoptions {
-			"-GS", "-W4", "-WX", "-wd4251", "-wd4275", "-nologo", "-J",
-			"-D_UNICODE", "-DUNICODE", "-DWIN32", "-D_WIN32",
-			"-EHs-c-", "-D_HAS_EXCEPTIONS=0", "-GR-", "-wd4702", "-utf-8"
-		}
 		
 	filter "system:linux"
 		pic "On"
 		defines {
 			"GTEST_OS_LINUX",
 			"GTEST_HAS_RTTI"
-		}
-		buildoptions {
-			"-fno-exceptions", "-Wall", "-Wshadow", "-Wno-error=dangling-else",
-			"-Wextra", "-Wno-unused-parameter", "-Wno-missing-field-initializers"
 		}
 		
 	filter "configurations:Debug"

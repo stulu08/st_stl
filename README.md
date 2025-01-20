@@ -19,6 +19,7 @@ Initially created for educational purposes, this project serves as a comprehensi
 ## Features
 
 - **Networking:** Simplified classes and functions for network programming.
+- **HTTP Parser:** Toolset to simply parse http responses and requests. 
 - **Extended Storage Types:** Additional data structures and storage solutions. (WIP)
 - **Windowing:** Tools for creating and managing application windows. (WIP)
 - **Graphics:** Basic graphics library for rendering shapes, images, and text. (WIP)
@@ -70,6 +71,57 @@ int main() {
   socket.close();
   net::SSA::Cleanup();
 
+  return 0;
+}
+```
+
+### HTTP Parser Example
+
+```cpp
+#include <stulu/http/parser.h>
+
+int main() {
+  stulu::http::request request = R"(
+GET / HTTP/1.1
+User-Agent: Mozilla/4.0 (compatible; MSIE5.01; Windows NT)
+Host: www.github.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 50
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+Connection: Keep-Alive
+
+licenseID=string&content=string&/paramsXML=string
+  )";
+  printf("Request info:\n");
+  printf("\tMethod: %s\n", stulu::http::method_to_string(request.get_method()).c_str());
+  printf("\tURI: %s\n", request.get_uri().c_str());
+  printf("\tVersion: %s\n", request.get_version().c_str());
+  printf("\tContent-Length: %llu\n", request.get_content_length());
+  printf("\tConnection: %s\n", request.get_line("Connection").c_str());
+
+  stulu::http::response response;
+  response.set_version("HTTP/1.1");
+  response.set_status(stulu::http::status::NotFound);
+  response.add_line("Date", "Sun, 18 Oct 2012 10:36:20 GMT");
+  response.add_line("Server", "Apache/2.2.14 (Win32)");
+  response.add_line("Connection", "Closed");
+  response.add_line("Content-Type", "text/html; charset=iso-8859-1");
+  response.set_content(R"(
+<html>
+	<head>
+		<title>404 Not Found</title>
+	</head>
+	<body>
+		<div>
+			<center>
+				<p> 404 - Not Found </p>
+			<center>
+		</div>
+	</body>
+</html>)");
+
+  printf("Response:\n%s\n", response.build().c_str());
   return 0;
 }
 ```

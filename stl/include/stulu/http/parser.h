@@ -10,9 +10,9 @@
 #include <stdio.h>
 ST_STL_BEGIN
 namespace HTTP {
-#define MAX_URI_LENGTH 1024
-#define MAX_URI_LENGTH_S "1024"
-#define VERSION_HTTP_1_1 "HTTP/1.1"
+#define ST_HTTP_MAX_URI_LENGTH 1024
+#define ST_HTTP_MAX_URI_LENGTH_S "1024"
+#define ST_HTTP_VERSION_HTTP_1_1 "HTTP/1.1"
 
 	class HttpBase {
 	public:
@@ -23,7 +23,7 @@ namespace HTTP {
 		};
 
 		ST_CONSTEXPR HttpBase() ST_NOEXCEPT
-			: m_version(VERSION_HTTP_1_1), m_contentLength(0), m_content(), m_data(nullptr) { }
+			: m_version(ST_HTTP_VERSION_HTTP_1_1), m_contentLength(0), m_content(), m_data(nullptr) { }
 
 		ST_INLINE ~HttpBase() ST_NOEXCEPT {
 			ClearLines();
@@ -117,13 +117,13 @@ namespace HTTP {
 
 	protected:
 		ST_INLINE void ReadLines(char const* lines_begin) ST_NOEXCEPT {
-			char* value_scan_str = new char[MAX_URI_LENGTH + 1];
-			char* name_scan_str = new char[MAX_URI_LENGTH + 1];
+			char* value_scan_str = new char[ST_HTTP_MAX_URI_LENGTH + 1];
+			char* name_scan_str = new char[ST_HTTP_MAX_URI_LENGTH + 1];
 			for (uint16_t faile_safe = 0; faile_safe < 1024; faile_safe++) {
 				char newLineCheck, colonCheck;
 
 				// "%1024[^:]%c %1024[^\n]%c"
-				const char* line_str_input_format = "%" MAX_URI_LENGTH_S "[^:]%c %" MAX_URI_LENGTH_S "[^\n]%c";
+				const char* line_str_input_format = "%" ST_HTTP_MAX_URI_LENGTH_S "[^:]%c %" ST_HTTP_MAX_URI_LENGTH_S "[^\n]%c";
 
 				if (sscanf(lines_begin, line_str_input_format, name_scan_str, &colonCheck, value_scan_str, &newLineCheck) != 4) {
 					break;
@@ -187,10 +187,10 @@ namespace HTTP {
 			const char* originalMsg = msg;
 
 			// buffer with an max length of an http uri
-			char* scan_str = new char[MAX_URI_LENGTH + 1];
+			char* scan_str = new char[ST_HTTP_MAX_URI_LENGTH + 1];
 
 			// "%1024s"
-			const char* str_input_format = "%" MAX_URI_LENGTH_S "s";
+			const char* str_input_format = "%" ST_HTTP_MAX_URI_LENGTH_S "s";
 
 			// read request method
 			if (sscanf(msg, str_input_format, scan_str) != 1) {
@@ -286,10 +286,10 @@ namespace HTTP {
 			const char* originalMsg = msg;
 
 			// buffer with an max length of an http uri
-			char* scan_str = new char[MAX_URI_LENGTH + 1];
+			char* scan_str = new char[ST_HTTP_MAX_URI_LENGTH + 1];
 
 			// read http version
-			if (sscanf(msg, "%" MAX_URI_LENGTH_S "s", scan_str) != 1) {
+			if (sscanf(msg, "%" ST_HTTP_MAX_URI_LENGTH_S "s", scan_str) != 1) {
 				delete[] scan_str;
 				return false;
 			}
@@ -298,7 +298,7 @@ namespace HTTP {
 
 			// read status
 			int status_code = 0;
-			if (sscanf(msg, "%" MAX_URI_LENGTH_S "d", &status_code) != 1) {
+			if (sscanf(msg, "%" ST_HTTP_MAX_URI_LENGTH_S "d", &status_code) != 1) {
 				delete[] scan_str;
 				return false;
 			}
@@ -306,7 +306,7 @@ namespace HTTP {
 			msg += 4;
 
 			// check status msg
-			if (sscanf(msg, "%" MAX_URI_LENGTH_S "[^\n]", scan_str) != 1) {
+			if (sscanf(msg, "%" ST_HTTP_MAX_URI_LENGTH_S "[^\n]", scan_str) != 1) {
 				delete[] scan_str;
 				return false;
 			}
@@ -336,7 +336,7 @@ namespace HTTP {
 			string str;
 			char statusNum[4] = "999";
 			if ((uint16_t)m_status <= 999 && (uint16_t)m_status >= 100) {
-				sprintf(statusNum, "%u", (uint32_t)m_status);
+				sprintf_s(statusNum, "%u", (uint32_t)m_status);
 			}
 
 			str += m_version + ' ' + statusNum + ' ' + StatusToString(m_status) + '\n';
@@ -356,8 +356,8 @@ namespace HTTP {
 			time_t local_time = _time64(timestamp);
 			struct tm* gmt = _gmtime64(&local_time);
 
-			char* time_str = new char[MAX_URI_LENGTH + 1];
-			strftime(time_str, MAX_URI_LENGTH, "%a, %d %b %Y %X GMT", gmt);
+			char* time_str = new char[ST_HTTP_MAX_URI_LENGTH + 1];
+			strftime(time_str, ST_HTTP_MAX_URI_LENGTH, "%a, %d %b %Y %X GMT", gmt);
 
 			if (HasLine("Date")) {
 				SetLine("Date", time_str);
