@@ -3,7 +3,7 @@
 #include <stulu/stl/unique_ptr.h>
 
 template<class T>
-using unique_ptr_type = stulu::unique_ptr<T>;
+using unique_ptr_type = Stulu::unique_ptr<T>;
 
 class UniquePtrTest : public ::testing::Test {
 protected:

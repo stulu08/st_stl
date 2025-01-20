@@ -5,10 +5,8 @@
 #include "stulu/networking/SSA.h"
 
 ST_STL_BEGIN
-namespace networking {
-	using string_type = stulu::string;
-
-	struct address_flags {
+namespace Networking {
+	struct AddressFlags {
 		static ST_INLINE ST_CONSTEXPR int32_t None = 0;
 		/// <summary>
 		/// The socket address will be used in a call to the bind function.
@@ -97,15 +95,15 @@ namespace networking {
 #endif
 
 
-		ST_INLINE ST_CONSTEXPR address_flags() ST_NOEXCEPT
+		ST_INLINE ST_CONSTEXPR AddressFlags() ST_NOEXCEPT
 			: m_value(None){}
-		ST_INLINE ST_CONSTEXPR address_flags(int32_t value) ST_NOEXCEPT
+		ST_INLINE ST_CONSTEXPR AddressFlags(int32_t value) ST_NOEXCEPT
 			: m_value(value) {}
 
 		ST_INLINE ST_CONSTEXPR operator int32_t() const ST_NOEXCEPT {
 			return m_value;
 		}
-		ST_INLINE ST_CONSTEXPR address_flags operator=(int32_t val) ST_NOEXCEPT {
+		ST_INLINE ST_CONSTEXPR AddressFlags operator=(int32_t val) ST_NOEXCEPT {
 			this->m_value = val;
 			return *this;
 		}
@@ -113,7 +111,7 @@ namespace networking {
 	private:
 		int32_t m_value = None;
 	};
-	enum class socket_type : int32_t {
+	enum class SocketType : int32_t {
 		/// <summary>
 		/// Provides sequenced, reliable, two-way, connection-based 
 		/// byte streams with an OOB data transmission mechanism. 
@@ -148,7 +146,7 @@ namespace networking {
 		SequencedPacket = SOCK_SEQPACKET
 
 	};
-	enum class address_family : int32_t {
+	enum class AddressFamily : int32_t {
 		// The address family is unspecified.
 		Unspecified = AF_UNSPEC,
 		/// The Internet Protocol version 4 (IPv4) address family.
@@ -164,7 +162,7 @@ namespace networking {
 		Bluetooth = AF_BTH
 #endif
 	};
-	enum class address_protocol : int32_t {
+	enum class AddressProtocol : int32_t {
 		Any = 0,
 		/// <summary>
 		/// The Transmission Control Protocol (TCP). 
@@ -191,12 +189,12 @@ namespace networking {
 		RM = 113
 	};
 
-	struct address_info {
-		address_flags flags = address_flags::Passive;
-		address_family family = address_family::IPv4;
-		socket_type socketType = socket_type::Stream;
-		address_protocol protocol = address_protocol::Any;
-		string_type canonicalName = "";
+	struct AddressInfo {
+		AddressFlags flags = AddressFlags::Passive;
+		AddressFamily family = AddressFamily::IPv4;
+		SocketType socketType = SocketType::Stream;
+		AddressProtocol protocol = AddressProtocol::Any;
+		string canonicalName = "";
 	};
 }
 ST_STL_END

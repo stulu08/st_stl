@@ -5,7 +5,7 @@
 #include <array>
 
 template<class T, size_t Size>
-using array_type = stulu::array<T, Size>;
+using array_type = Stulu::array<T, Size>;
 
 class ArrayTest : public ::testing::Test {
 protected:

@@ -4,8 +4,8 @@
 #include "stulu/stl/string.h"
 
 ST_STL_BEGIN
-namespace http {
-	enum class status : uint16_t
+namespace HTTP {
+	enum class Status : uint16_t
 	{
 		Invalid = 999,
 		Continue = 100,
@@ -74,135 +74,135 @@ namespace http {
 		NetworkAuthenticationRequired = 511,
 	};
 
-	ST_NODISCARD ST_INLINE stulu::string status_to_string(status code) ST_NOEXCEPT {
+	ST_NODISCARD ST_INLINE string StatusToString(Status code) ST_NOEXCEPT {
 		switch (code) {
-		case status::Continue:
+		case Status::Continue:
 			return "Continue";
-		case status::SwitchingProtocols:
+		case Status::SwitchingProtocols:
 			return "Switching Protocols";
-		case status::Processing:
+		case Status::Processing:
 			return "Processing";
-		case status::EarlyHints:
+		case Status::EarlyHints:
 			return "Early Hints";
-		case status::OK:
+		case Status::OK:
 			return "OK";
-		case status::Created:
+		case Status::Created:
 			return "Created";
-		case status::Accepted:
+		case Status::Accepted:
 			return "Accepted";
-		case status::NonAuthoritativeInformation:
+		case Status::NonAuthoritativeInformation:
 			return "Non Authoritative Information";
-		case status::NoContent:
+		case Status::NoContent:
 			return "No Content";
-		case status::ResetContent:
+		case Status::ResetContent:
 			return "Reset Content";
-		case status::PartialContent:
+		case Status::PartialContent:
 			return "Partial Content";
-		case status::MultiStatus:
+		case Status::MultiStatus:
 			return "Multi Status";
-		case status::AlreadyReported:
+		case Status::AlreadyReported:
 			return "Already Reported";
-		case status::IMUsed:
+		case Status::IMUsed:
 			return "IM Used";
-		case status::MultipleChoices:
+		case Status::MultipleChoices:
 			return "Multiple Choices";
-		case status::MovedPermanently:
+		case Status::MovedPermanently:
 			return "Moved Permanently";
-		case status::Found:
+		case Status::Found:
 			return "Found";
-		case status::SeeOther:
+		case Status::SeeOther:
 			return "See Other";
-		case status::NotModified:
+		case Status::NotModified:
 			return "Not Modified";
-		case status::UseProxy:
+		case Status::UseProxy:
 			return "Use Proxy";
-		case status::TemporaryRedirect:
+		case Status::TemporaryRedirect:
 			return "Temporary Redirect";
-		case status::PermanentRedirect:
+		case Status::PermanentRedirect:
 			return "Permanent Redirect";
-		case status::BadRequest:
+		case Status::BadRequest:
 			return "Bad Request";
-		case status::Unauthorized:
+		case Status::Unauthorized:
 			return "Unauthorized";
-		case status::PaymentRequired:
+		case Status::PaymentRequired:
 			return "Payment Required";
-		case status::Forbidden:
+		case Status::Forbidden:
 			return "Forbidden";
-		case status::NotFound:
+		case Status::NotFound:
 			return "Not Found";
-		case status::MethodNotAllowed:
+		case Status::MethodNotAllowed:
 			return "Method Not Allowed";
-		case status::NotAcceptable:
+		case Status::NotAcceptable:
 			return "Not Acceptable";
-		case status::ProxyAuthenticationRequired:
+		case Status::ProxyAuthenticationRequired:
 			return "Proxy Authentication Required";
-		case status::RequestTimeout:
+		case Status::RequestTimeout:
 			return "Request Timeout";
-		case status::Conflict:
+		case Status::Conflict:
 			return "Conflict";
-		case status::Gone:
+		case Status::Gone:
 			return "Gone";
-		case status::LengthRequired:
+		case Status::LengthRequired:
 			return "Length Required";
-		case status::PreconditionFailed:
+		case Status::PreconditionFailed:
 			return "Precondition Failed";
-		case status::ContentTooLarge:
+		case Status::ContentTooLarge:
 			return "Content Too Large";
 		//case status::PayloadTooLarge:
 			//	return "Payload Too Large";
-		case status::URITooLong:
+		case Status::URITooLong:
 			return "URI Too Long";
-		case status::UnsupportedMediaType:
+		case Status::UnsupportedMediaType:
 			return "Unsupported Media Type";
-		case status::RangeNotSatisfiable:
+		case Status::RangeNotSatisfiable:
 			return "Range Not Satisfiable";
-		case status::ExpectationFailed:
+		case Status::ExpectationFailed:
 			return "Expectation Failed";
-		case status::ImATeapot:
+		case Status::ImATeapot:
 			return "ImA Teapot";
-		case status::MisdirectedRequest:
+		case Status::MisdirectedRequest:
 			return "Misdirected Request";
-		case status::UnprocessableContent:
+		case Status::UnprocessableContent:
 			return "Unprocessable Content";
 		//case status::UnprocessableEntity:
 			//	return "Unprocessable Entity";
-		case status::Locked:
+		case Status::Locked:
 			return "Locked";
-		case status::FailedDependency:
+		case Status::FailedDependency:
 			return "Failed Dependency";
-		case status::TooEarly:
+		case Status::TooEarly:
 			return "Too Early";
-		case status::UpgradeRequired:
+		case Status::UpgradeRequired:
 			return "Upgrade Required";
-		case status::PreconditionRequired:
+		case Status::PreconditionRequired:
 			return "Precondition Required";
-		case status::TooManyRequests:
+		case Status::TooManyRequests:
 			return "Too Many Requests";
-		case status::RequestHeaderFieldsTooLarge:
+		case Status::RequestHeaderFieldsTooLarge:
 			return "Request Header Fields Too Large";
-		case status::UnavailableForLegalReasons:
+		case Status::UnavailableForLegalReasons:
 			return "Unavailable For Legal Reasons";
-		case status::InternalServerError:
+		case Status::InternalServerError:
 			return "Internal Server Error";
-		case status::NotImplemented:
+		case Status::NotImplemented:
 			return "Not Implemented";
-		case status::BadGateway:
+		case Status::BadGateway:
 			return "Bad Gateway";
-		case status::ServiceUnavailable:
+		case Status::ServiceUnavailable:
 			return "Service Unavailable";
-		case status::GatewayTimeout:
+		case Status::GatewayTimeout:
 			return "Gateway Timeout";
-		case status::HTTPVersionNotSupported:
+		case Status::HTTPVersionNotSupported:
 			return "HTTP Version Not Supported";
-		case status::VariantAlsoNegotiates:
+		case Status::VariantAlsoNegotiates:
 			return "Variant Also Negotiates";
-		case status::InsufficientStorage:
+		case Status::InsufficientStorage:
 			return "Insufficient Storage";
-		case status::LoopDetected:
+		case Status::LoopDetected:
 			return "Loop Detected";
-		case status::NotExtended:
+		case Status::NotExtended:
 			return "Not Extended";
-		case status::NetworkAuthenticationRequired:
+		case Status::NetworkAuthenticationRequired:
 			return "Network Authentication Required";
 		}
 		return "Invalid";

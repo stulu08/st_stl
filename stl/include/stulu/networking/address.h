@@ -4,13 +4,13 @@
 #include "stulu/networking/SSA.h"
 
 ST_STL_BEGIN
-namespace networking {
-	class address {
+namespace Networking {
+	class Address {
 	public:
-		ST_CONSTEXPR address(nullptr_t) ST_NOEXCEPT
+		ST_CONSTEXPR Address(nullptr_t) ST_NOEXCEPT
 			: m_node(), m_port(), m_addr(nullptr), m_status(-1) {}
 
-		ST_INLINE address(const string_type& node, const string_type& port, const address_info& hintInfo = address_info()) ST_NOEXCEPT
+		ST_INLINE Address(const string& node, const string& port, const AddressInfo& hintInfo = AddressInfo()) ST_NOEXCEPT
 			: m_node(node), m_port(port), m_addr(nullptr), m_status(-1) {
 			struct addrinfo hint = addrinfo();
 			hint.ai_flags = hintInfo.flags;
@@ -19,7 +19,7 @@ namespace networking {
 			hint.ai_protocol = (int32_t)hintInfo.protocol;
 			create_info(hint);
 		}
-		ST_INLINE address(const string_type& node, const string_type& port, const struct addrinfo* hint) ST_NOEXCEPT
+		ST_INLINE Address(const string& node, const string& port, const struct addrinfo* hint) ST_NOEXCEPT
 			: m_node(node), m_port(port), m_addr(nullptr), m_status(-1) {
 			struct addrinfo _hint = addrinfo();
 			_hint.ai_flags = hint->ai_flags;
@@ -28,7 +28,7 @@ namespace networking {
 			_hint.ai_protocol = hint->ai_protocol;
 			create_info(_hint);
 		}
-		ST_INLINE address(const address& other) ST_NOEXCEPT
+		ST_INLINE Address(const Address& other) ST_NOEXCEPT
 			: m_addr(nullptr) {
 			this->m_node = other.m_node;
 			this->m_port = other.m_port;
@@ -36,15 +36,15 @@ namespace networking {
 
 			if (other.m_status == 0) {
 				struct addrinfo hint = addrinfo();
-				hint.ai_flags = other.info()->ai_flags;
-				hint.ai_family = other.info()->ai_family;
-				hint.ai_socktype = other.info()->ai_socktype;
-				hint.ai_protocol = other.info()->ai_protocol;
+				hint.ai_flags = other.Info()->ai_flags;
+				hint.ai_family = other.Info()->ai_family;
+				hint.ai_socktype = other.Info()->ai_socktype;
+				hint.ai_protocol = other.Info()->ai_protocol;
 				this->create_info(hint);
 			}
 		}
 
-		ST_INLINE address(address&& other) ST_NOEXCEPT
+		ST_INLINE Address(Address&& other) ST_NOEXCEPT
 			: m_node(""), m_port(""), m_addr(nullptr) {
 			swap(this->m_node, other.m_node);
 			swap(this->m_port, other.m_port);
@@ -52,12 +52,12 @@ namespace networking {
 			swap(this->m_status, other.m_status);
 		}
 
-		ST_INLINE ~address() {
+		ST_INLINE ~Address() {
 			if (m_addr)
 				freeaddrinfo(m_addr);
 		}
 
-		ST_INLINE address& operator=(const address& other) ST_NOEXCEPT {
+		ST_INLINE Address& operator=(const Address& other) ST_NOEXCEPT {
 			if (this == ST_STL addressof(other)) {
 				return *this;
 			}
@@ -68,16 +68,16 @@ namespace networking {
 
 			if (other.m_status == 0) {
 				struct addrinfo hint = addrinfo();
-				hint.ai_flags = other.info()->ai_flags;
-				hint.ai_family = other.info()->ai_family;
-				hint.ai_socktype = other.info()->ai_socktype;
-				hint.ai_protocol = other.info()->ai_protocol;
+				hint.ai_flags = other.Info()->ai_flags;
+				hint.ai_family = other.Info()->ai_family;
+				hint.ai_socktype = other.Info()->ai_socktype;
+				hint.ai_protocol = other.Info()->ai_protocol;
 				create_info(hint);
 			}
 
 			return *this;
 		}
-		ST_INLINE address& operator=(address&& other) ST_NOEXCEPT {
+		ST_INLINE Address& operator=(Address&& other) ST_NOEXCEPT {
 			if (this == ST_STL addressof(other)) {
 				return *this;
 			}
@@ -88,29 +88,29 @@ namespace networking {
 			return *this;
 		}
 
-		ST_NODISCARD ST_INLINE int status() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE int Status() const ST_NOEXCEPT {
 			return m_status;
 		}
-		ST_NODISCARD ST_INLINE int last_error() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE int LastError() const ST_NOEXCEPT {
 			return m_status;
 		}
-		ST_NODISCARD ST_INLINE string_type node() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE string Node() const ST_NOEXCEPT {
 			return m_node;
 		}
-		ST_NODISCARD ST_INLINE string_type ip() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE string IP() const ST_NOEXCEPT {
 			return m_node;
 		}
-		ST_NODISCARD ST_INLINE string_type hostname() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE string Hostname() const ST_NOEXCEPT {
 			return m_node;
 		}
-		ST_NODISCARD ST_INLINE string_type port() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE string Port() const ST_NOEXCEPT {
 			return m_port;
 		}
-		ST_NODISCARD ST_INLINE struct addrinfo* info() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE struct addrinfo* Info() const ST_NOEXCEPT {
 			return m_addr;
 		}
 
-		ST_NODISCARD ST_INLINE static int GetHostName(string_type& outName) ST_NOEXCEPT  {
+		ST_NODISCARD ST_INLINE static int GetHostName(string& outName) ST_NOEXCEPT  {
 			char hostname[50];
 			int re = gethostname(hostname, sizeof(hostname));
 			if (re == 0) {
@@ -124,7 +124,7 @@ namespace networking {
 		}
 
 		struct addrinfo* m_addr;
-		string_type m_node, m_port;
+		string m_node, m_port;
 		int m_status = 0;
 	};
 }

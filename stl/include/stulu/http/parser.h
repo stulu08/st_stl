@@ -1,6 +1,7 @@
 #pragma once
 #include "stulu/stl/cassert.h"
 #include "stulu/stl/cstdint.h"
+#include "stulu/stl/ctime.h"
 #include "stulu/stl/string.h"
 
 #include "stulu/http/status.h"
@@ -8,73 +9,74 @@
 
 #include <stdio.h>
 ST_STL_BEGIN
-namespace http {
+namespace HTTP {
 #define MAX_URI_LENGTH 1024
 #define MAX_URI_LENGTH_S "1024"
+#define VERSION_HTTP_1_1 "HTTP/1.1"
 
-	class http_base {
+	class HttpBase {
 	public:
-		struct line_data {
-			stulu::string name;
-			stulu::string value;
-			line_data* next = nullptr;
+		struct LineData {
+			string name;
+			string value;
+			LineData* next = nullptr;
 		};
 
-		ST_CONSTEXPR http_base() ST_NOEXCEPT
-			: m_version("HTTP/1.1"), m_content_length(0), m_content(), m_data(nullptr) { }
+		ST_CONSTEXPR HttpBase() ST_NOEXCEPT
+			: m_version(VERSION_HTTP_1_1), m_contentLength(0), m_content(), m_data(nullptr) { }
 
-		ST_INLINE ~http_base() ST_NOEXCEPT {
-			clear_lines();
+		ST_INLINE ~HttpBase() ST_NOEXCEPT {
+			ClearLines();
 		}
 
-		ST_INLINE void clear_lines() ST_NOEXCEPT {
-			line_data* line = m_data;
+		ST_INLINE void ClearLines() ST_NOEXCEPT {
+			LineData* line = m_data;
 			while (line != nullptr) {
-				line_data* next_line = line->next;
+				LineData* next_line = line->next;
 				delete line;
 				line = next_line;
 			}
 			m_data = nullptr;
 		}
-		ST_INLINE void add_line_front(const stulu::string& line_name, const stulu::string& line_value) ST_NOEXCEPT {
-			line_data* newLine = new line_data();
+		ST_INLINE void AddLineFront(const string& line_name, const string& line_value) ST_NOEXCEPT {
+			LineData* newLine = new LineData();
 			newLine->name = line_name;
 			newLine->value = line_value;
 			newLine->next = m_data;
 
 			m_data = newLine;
 		}
-		ST_INLINE void add_line(const stulu::string& line_name, const stulu::string& line_value) ST_NOEXCEPT {
-			return add_line_back(line_name, line_value);
+		ST_INLINE void AddLine(const string& line_name, const string& line_value) ST_NOEXCEPT {
+			return AddLineBack(line_name, line_value);
 		}
-		ST_INLINE void add_line_back(const stulu::string& line_name, const stulu::string& line_value) ST_NOEXCEPT {
+		ST_INLINE void AddLineBack(const string& line_name, const string& line_value) ST_NOEXCEPT {
 			if (m_data == nullptr) {
-				add_line_front(line_name, line_value);
+				AddLineFront(line_name, line_value);
 				return;
 			}
-			line_data* newLine = new line_data();
+			LineData* newLine = new LineData();
 			newLine->name = line_name;
 			newLine->value = line_value;
 			newLine->next = nullptr;
 
 
-			for (line_data* line = m_data; line != nullptr; line = line->next) {
+			for (LineData* line = m_data; line != nullptr; line = line->next) {
 				if (line->next == nullptr) {
 					line->next = newLine;
 					return;
 				}
 			}
 		}
-		ST_NODISCARD ST_INLINE bool has_line(const stulu::string& line_name) const ST_NOEXCEPT {
-			for (line_data* line = m_data; line != nullptr; line = line->next) {
+		ST_NODISCARD ST_INLINE bool HasLine(const string& line_name) const ST_NOEXCEPT {
+			for (LineData* line = m_data; line != nullptr; line = line->next) {
 				if (line->name == line_name) {
 					return true;
 				}
 			}
 			return false;
 		}
-		ST_NODISCARD ST_INLINE stulu::string get_line(const stulu::string& line_name) const ST_NOEXCEPT {
-			for (line_data* line = m_data; line != nullptr; line = line->next) {
+		ST_NODISCARD ST_INLINE string GetLine(const string& line_name) const ST_NOEXCEPT {
+			for (LineData* line = m_data; line != nullptr; line = line->next) {
 				if (line->name == line_name) {
 					return line->value;
 				}
@@ -82,8 +84,8 @@ namespace http {
 			ST_REPORT_ERROR("Line not found!");
 			return "";
 		}
-		ST_INLINE void set_line(const stulu::string& line_name, const stulu::string& line_value) const ST_NOEXCEPT {
-			for (line_data* line = m_data; line != nullptr; line = line->next) {
+		ST_INLINE void SetLine(const string& line_name, const string& line_value) const ST_NOEXCEPT {
+			for (LineData* line = m_data; line != nullptr; line = line->next) {
 				if (line->name == line_name) {
 					line->value = line_value;
 					return;
@@ -92,29 +94,29 @@ namespace http {
 			ST_REPORT_ERROR("Line not found!");
 		}
 
-		ST_INLINE void set_version(const stulu::string& version) ST_NOEXCEPT {
+		ST_INLINE void SetVersion(const string& version) ST_NOEXCEPT {
 			m_version = version;
 		}
-		ST_INLINE void set_content(const stulu::string& content) ST_NOEXCEPT {
+		ST_INLINE void SetContent(const string& content) ST_NOEXCEPT {
 			m_content = content;
-			m_content_length = m_content.length();
+			m_contentLength = m_content.length();
 		}
 
-		ST_NODISCARD ST_INLINE stulu::string get_version() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE string GetVersion() const ST_NOEXCEPT {
 			return m_version;
 		}
-		ST_NODISCARD ST_INLINE stulu::string get_content() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE string GetContent() const ST_NOEXCEPT {
 			return m_content;
 		}
-		ST_NODISCARD ST_INLINE size_t get_content_length() const ST_NOEXCEPT {
-			return m_content_length;
+		ST_NODISCARD ST_INLINE size_t GetContentLength() const ST_NOEXCEPT {
+			return m_contentLength;
 		}
-		ST_NODISCARD ST_INLINE const line_data* get_data() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE const LineData* GetData() const ST_NOEXCEPT {
 			return m_data;
 		}
 
 	protected:
-		ST_INLINE void read_lines(char const* lines_begin) ST_NOEXCEPT {
+		ST_INLINE void ReadLines(char const* lines_begin) ST_NOEXCEPT {
 			char* value_scan_str = new char[MAX_URI_LENGTH + 1];
 			char* name_scan_str = new char[MAX_URI_LENGTH + 1];
 			for (uint16_t faile_safe = 0; faile_safe < 1024; faile_safe++) {
@@ -131,57 +133,57 @@ namespace http {
 					break;
 				}
 
-				const size_t nameLength = stulu::strlen(name_scan_str);
-				const size_t valueLength = stulu::strlen(value_scan_str);
+				const size_t nameLength = strlen(name_scan_str);
+				const size_t valueLength = strlen(value_scan_str);
 				lines_begin += nameLength + valueLength + 3;
 
-				const stulu::string name = stulu::string(name_scan_str, nameLength);
+				const string name = string(name_scan_str, nameLength);
 
-				if (m_content_length == 0 && name == "Content-Length") {
+				if (m_contentLength == 0 && name == "Content-Length") {
 					int length = 0;
 					if (sscanf(value_scan_str, "%d", &length) != 1) {
 						ST_REPORT_ERROR("Could not parse Content-Length");
 					}
 					else {
-						m_content_length = length;
+						m_contentLength = length;
 					}
 				}
 
-				add_line_back(name, stulu::string(value_scan_str));
+				AddLineBack(name, string(value_scan_str));
 
 			}
 			delete[] name_scan_str;
 			delete[] value_scan_str;
 		}
 
-		stulu::string m_version;
+		string m_version;
 
-		size_t m_content_length;
-		stulu::string m_content;
+		size_t m_contentLength;
+		string m_content;
 
-		struct line_data* m_data;
+		struct LineData* m_data;
 	};
 
-	class request : public http_base {
+	class Request : public HttpBase {
 	public:
-		ST_CONSTEXPR request() ST_NOEXCEPT 
-			: http_base(), m_method(), m_uri() { }
+		ST_CONSTEXPR Request() ST_NOEXCEPT 
+			: HttpBase(), m_method(), m_uri() { }
 
-		ST_INLINE request(const char* msg) ST_NOEXCEPT 
-			: http_base(), m_method(), m_uri() {
-			if (!parse(msg))
+		ST_INLINE Request(const char* msg) ST_NOEXCEPT 
+			: HttpBase(), m_method(), m_uri() {
+			if (!Parse(msg))
 				ST_REPORT_ERROR("Error parsing request!");
 		}
-		ST_INLINE request(const stulu::string msg) ST_NOEXCEPT
-			: http_base(), m_method(), m_uri() {
-			if (!parse(msg.c_str()))
+		ST_INLINE Request(const string msg) ST_NOEXCEPT
+			: HttpBase(), m_method(), m_uri() {
+			if (!Parse(msg.c_str()))
 				ST_REPORT_ERROR("Error parsing request!");
 		}
-		ST_INLINE ~request() ST_NOEXCEPT {
-			clear_lines();
+		ST_INLINE ~Request() ST_NOEXCEPT {
+			ClearLines();
 		}
 
-		ST_NODISCARD ST_INLINE bool parse(char const* msg) {
+		ST_NODISCARD ST_INLINE bool Parse(char const* msg) {
 			const char* originalMsg = msg;
 
 			// buffer with an max length of an http uri
@@ -195,46 +197,46 @@ namespace http {
 				delete[] scan_str;
 				return false;
 			}
-			m_method = method_from_str(scan_str);
-			msg += stulu::strlen(scan_str) + 1;
+			m_method = MethodFromString(scan_str);
+			msg += strlen(scan_str) + 1;
 
 			// read uri
 			if (sscanf(msg, str_input_format, scan_str) != 1) {
 				delete[] scan_str;
 				return false;
 			}
-			m_uri = stulu::string(scan_str);
-			msg += stulu::strlen(scan_str) + 1;
+			m_uri = string(scan_str);
+			msg += strlen(scan_str) + 1;
 
 			// read http version
 			if (sscanf(msg, str_input_format, scan_str) != 1) {
 				delete[] scan_str;
 				return false;
 			}
-			m_version = stulu::string(scan_str);
-			msg += stulu::strlen(scan_str) + 2;
+			m_version = string(scan_str);
+			msg += strlen(scan_str) + 2;
 
-			read_lines(msg);
+			ReadLines(msg);
 
-			if (m_content_length != 0) {
-				const size_t originalLength = stulu::strlen(originalMsg);
-				if (originalLength < m_content_length) {
+			if (m_contentLength != 0) {
+				const size_t originalLength = strlen(originalMsg);
+				if (originalLength < m_contentLength) {
 					ST_REPORT_ERROR("Content-Length does not match");
 				}
 				else {
-					const char* begin = originalMsg + (originalLength - m_content_length);
-					m_content = stulu::string(begin, m_content_length);
+					const char* begin = originalMsg + (originalLength - m_contentLength);
+					m_content = string(begin, m_contentLength);
 				}
 			}
 
 			delete[] scan_str;
 			return true;
 		}
-		ST_NODISCARD ST_INLINE stulu::string build() const {
-			stulu::string str;
-			str += method_to_string(m_method) + ' ' + m_uri + ' ' + m_version + '\n';
+		ST_NODISCARD ST_INLINE string Build() const {
+			string str;
+			str += MethodToString(m_method) + ' ' + m_uri + ' ' + m_version + '\n';
 
-			for (line_data * line = m_data; line != nullptr; line = line->next) {
+			for (LineData * line = m_data; line != nullptr; line = line->next) {
 				str += line->name + ": " + line->value + '\n';
 			}
 
@@ -243,44 +245,44 @@ namespace http {
 			return str;
 		}
 
-		ST_INLINE void set_uri(const stulu::string& uri) ST_NOEXCEPT {
+		ST_INLINE void SetURI(const string& uri) ST_NOEXCEPT {
 			m_uri = uri;
 		}
-		ST_INLINE void set_method(request_method method) ST_NOEXCEPT {
+		ST_INLINE void SetMethod(request_method method) ST_NOEXCEPT {
 			m_method = method;
 		}
 
-		ST_NODISCARD ST_INLINE request_method get_method() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE request_method GetMethod() const ST_NOEXCEPT {
 			return m_method;
 		}
-		ST_NODISCARD ST_INLINE stulu::string get_uri() const ST_NOEXCEPT {
+		ST_NODISCARD ST_INLINE string GetURI() const ST_NOEXCEPT {
 			return m_uri;
 		}
 	private:
 		request_method m_method;
-		stulu::string m_uri;
+		string m_uri;
 	};
 
-	class response : public http_base {
+	class Response : public HttpBase {
 	public:
-		ST_CONSTEXPR response() ST_NOEXCEPT
-			: http_base(), m_status(status::Invalid) { }
+		ST_CONSTEXPR Response() ST_NOEXCEPT
+			: HttpBase(), m_status(Status::Invalid) { }
 
-		ST_INLINE response(const char* msg) ST_NOEXCEPT
-			: http_base(), m_status(status::Invalid) {
-			if (!parse(msg))
+		ST_INLINE Response(const char* msg) ST_NOEXCEPT
+			: HttpBase(), m_status(Status::Invalid) {
+			if (!Parse(msg))
 				ST_REPORT_ERROR("Error parsing request!");
 		}
-		ST_INLINE response(const stulu::string msg) ST_NOEXCEPT
-			: http_base(), m_status(status::Invalid) {
-			if (!parse(msg.c_str()))
+		ST_INLINE Response(const string msg) ST_NOEXCEPT
+			: HttpBase(), m_status(Status::Invalid) {
+			if (!Parse(msg.c_str()))
 				ST_REPORT_ERROR("Error parsing request!");
 		}
-		ST_INLINE ~response() ST_NOEXCEPT {
-			clear_lines();
+		ST_INLINE ~Response() ST_NOEXCEPT {
+			ClearLines();
 		}
 
-		ST_NODISCARD ST_INLINE bool parse(char const* msg) {
+		ST_NODISCARD ST_INLINE bool Parse(char const* msg) {
 			const char* originalMsg = msg;
 
 			// buffer with an max length of an http uri
@@ -291,8 +293,8 @@ namespace http {
 				delete[] scan_str;
 				return false;
 			}
-			m_version = stulu::string(scan_str);
-			msg += stulu::strlen(scan_str) + 2;
+			m_version = string(scan_str);
+			msg += strlen(scan_str) + 2;
 
 			// read status
 			int status_code = 0;
@@ -300,7 +302,7 @@ namespace http {
 				delete[] scan_str;
 				return false;
 			}
-			m_status = (status)status_code;
+			m_status = (Status)status_code;
 			msg += 4;
 
 			// check status msg
@@ -308,21 +310,21 @@ namespace http {
 				delete[] scan_str;
 				return false;
 			}
-			if (status_to_string(m_status) != stulu::string(scan_str)) {
+			if (StatusToString(m_status) != string(scan_str)) {
 				ST_REPORT_ERROR("Status code and message do not match");
 			}
-			msg += stulu::strlen(scan_str) + 1;
+			msg += strlen(scan_str) + 1;
 
-			read_lines(msg);
+			ReadLines(msg);
 
-			if (m_content_length != 0) {
-				const size_t originalLength = stulu::strlen(originalMsg);
-				if (originalLength < m_content_length) {
+			if (m_contentLength != 0) {
+				const size_t originalLength = strlen(originalMsg);
+				if (originalLength < m_contentLength) {
 					ST_REPORT_ERROR("Content-Length does not match");
 				}
 				else {
-					const char* begin = originalMsg + (originalLength - m_content_length);
-					m_content = stulu::string(begin, m_content_length);
+					const char* begin = originalMsg + (originalLength - m_contentLength);
+					m_content = string(begin, m_contentLength);
 				}
 
 			}
@@ -330,16 +332,16 @@ namespace http {
 			delete[] scan_str;
 			return true;
 		}
-		ST_NODISCARD ST_INLINE stulu::string build() const {
-			stulu::string str;
+		ST_NODISCARD ST_INLINE string Build() const {
+			string str;
 			char statusNum[4] = "999";
 			if ((uint16_t)m_status <= 999 && (uint16_t)m_status >= 100) {
 				sprintf(statusNum, "%u", (uint32_t)m_status);
 			}
 
-			str += m_version + ' ' + statusNum + ' ' + status_to_string(m_status) + '\n';
+			str += m_version + ' ' + statusNum + ' ' + StatusToString(m_status) + '\n';
 
-			for (line_data* line = m_data; line != nullptr; line = line->next) {
+			for (LineData* line = m_data; line != nullptr; line = line->next) {
 				str += line->name + ": " + line->value + '\n';
 			}
 
@@ -347,15 +349,29 @@ namespace http {
 			str += m_content;
 			return str;
 		}
-		ST_INLINE void set_status(status _status) ST_NOEXCEPT {
+		ST_INLINE void SetStatus(Status _status) ST_NOEXCEPT {
 			m_status = _status;
 		}
+		ST_INLINE void SetDate(__time64_t* timestamp = 0) {
+			time_t local_time = _time64(timestamp);
+			struct tm* gmt = _gmtime64(&local_time);
 
-		ST_NODISCARD ST_INLINE status get_status() const ST_NOEXCEPT {
+			char* time_str = new char[MAX_URI_LENGTH + 1];
+			strftime(time_str, MAX_URI_LENGTH, "%a, %d %b %Y %X GMT", gmt);
+
+			if (HasLine("Date")) {
+				SetLine("Date", time_str);
+			}
+			else {
+				AddLine("Date", time_str);
+			}
+		}
+
+		ST_NODISCARD ST_INLINE Status GetStatus() const ST_NOEXCEPT {
 			return m_status;
 		}
 	private:
-		status m_status;
+		Status m_status;
 	};
 }
 ST_STL_END

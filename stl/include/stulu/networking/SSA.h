@@ -22,7 +22,7 @@
 #endif
 
 ST_STL_BEGIN
-namespace networking {
+namespace Networking {
 #ifdef ST_WINDOWS
 	ST_INLINE_VAR const size_t SSA_DESCRIPTION_LENGTH = WSADESCRIPTION_LEN;
 	ST_INLINE_VAR const size_t SSA_STATUS_LENGTH = WSASYS_STATUS_LEN;
@@ -41,13 +41,18 @@ namespace networking {
 }	;
 #endif
 
+	constexpr int Success = 0;
+
+	template<class T>
+	using Scope = ST_STL unique_ptr<T>;
+
 	// Stulu Socket Application
 	class SSA {
 	private:
 		ST_CONSTEXPR SSA() ST_NOEXCEPT { }
 
 	public:
-		ST_NODISCARD ST_INLINE static stulu::unique_ptr<SSAData> Startup() {
+		ST_NODISCARD ST_INLINE static Scope<SSAData> Startup() {
 			SSAData* data = new SSAData();
 			const unsigned short Version = MAKE_SSA_VERSION(2, 2);
 #ifdef ST_WINDOWS
@@ -60,7 +65,7 @@ namespace networking {
 			strcpy(data->szDescription, "WinSock 2.0 Stulu Linux Wrapper");
 			strcpy(data->szSystemStatus, "Running");
 #endif
-			return stulu::move(stulu::unique_ptr<SSAData>(data));
+			return move(Scope<SSAData>(data));
 		}
 
 		ST_INLINE static void Cleanup() ST_NOEXCEPT {

@@ -3,7 +3,7 @@
 #include <stulu/stl/vector.h>
 
 template<class T>
-using vector_type = stulu::vector<T>;
+using vector_type = Stulu::vector<T>;
 
 class VectorTest : public ::testing::Test {
 protected:

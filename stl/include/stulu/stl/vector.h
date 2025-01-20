@@ -6,7 +6,7 @@
 
 ST_STL_BEGIN
 
-namespace internal {
+namespace Internal {
 	template<class T>
 	struct VectorStorage {
 		using value_type = T;
@@ -26,12 +26,12 @@ namespace internal {
 }
 
 
-template<class T, typename A = ST_STL allocator<T>>
+template<class T, class A = ST_STL allocator<T>>
 class vector {
 public:
 	using value_type = T;
 	using allocator_type = A;
-	using storage_type = ST_STL internal::VectorStorage<T>;
+	using storage_type = ST_STL Internal::VectorStorage<T>;
 	using size_type = size_t;
 
 	ST_INLINE ST_CONSTEXPR vector() ST_NOEXCEPT {}
@@ -117,7 +117,7 @@ public:
 		// oldSize == newSize no resize needed
 	}
 	ST_INLINE void resize(const size_type count) {
-		resize(count, internal::EmptyType());
+		resize(count, Internal::EmptyType());
 	}
 
 	ST_INLINE void clear() {

@@ -10,3 +10,5 @@
 #include "stl/type_traits.h"
 #include "stl/unique_ptr.h"
 #include "stl/vector.h"
+
+namespace stulu = ::ST_STL_NAMESPACE_NAME;

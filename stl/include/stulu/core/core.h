@@ -51,7 +51,7 @@
 #endif // !ST_DEBUG_LEVEL
 
 #ifndef ST_STL_NAMESPACE_NAME
-#define ST_STL_NAMESPACE_NAME stulu
+#define ST_STL_NAMESPACE_NAME Stulu
 #endif // !ST_STL_NAMESPACE_NAME
 
 #ifndef ST_STL_BEGIN

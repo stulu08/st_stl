@@ -5,7 +5,8 @@
 #include "stulu/stl/string.h"
 
 ST_STL_BEGIN
-namespace http {
+namespace HTTP {
+
 	enum class request_method : uint8_t {
 		NONE,
 		GET,
@@ -19,7 +20,7 @@ namespace http {
 		TRACE,
 	};
 
-	ST_NODISCARD ST_INLINE stulu::string method_to_string(request_method method) ST_NOEXCEPT {
+	ST_NODISCARD ST_INLINE string MethodToString(request_method method) ST_NOEXCEPT {
 		switch (method)
 		{
 		case request_method::GET:
@@ -42,11 +43,11 @@ namespace http {
 		return "INVALID";
 	}
 
-	ST_NODISCARD ST_INLINE request_method method_from_str(const stulu::string& str) ST_NOEXCEPT {
+	ST_NODISCARD ST_INLINE request_method MethodFromString(const string& str) ST_NOEXCEPT {
 		// to upper
-		stulu::string method(str.length());
+		string method(str.length());
 		for (size_t i = 0; i < str.length(); i++)
-			method[i] = static_cast<char>(stulu::toupper(static_cast<int>(str[i])));
+			method[i] = static_cast<char>(toupper(static_cast<int>(str[i])));
 
 		if (method == "GET")
 			return request_method::GET;

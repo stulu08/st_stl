@@ -423,8 +423,8 @@ class DeathTestImpl : public DeathTest {
   const char* statement() const { return statement_; }
   bool spawned() const { return spawned_; }
   void set_spawned(bool is_spawned) { spawned_ = is_spawned; }
-  int status() const { return status_; }
-  void set_status(int a_status) { status_ = a_status; }
+  int Status() const { return status_; }
+  void SetStatus(int a_status) { status_ = a_status; }
   DeathTestOutcome outcome() const { return outcome_; }
   void set_outcome(DeathTestOutcome an_outcome) { outcome_ = an_outcome; }
   int read_fd() const { return read_fd_; }
@@ -612,7 +612,7 @@ bool DeathTestImpl::Passed(bool status_ok) {
         }
       } else {
         buffer << "    Result: died but not with expected exit code:\n"
-               << "            " << ExitSummary(status()) << "\n"
+               << "            " << ExitSummary(Status()) << "\n"
                << "Actual msg:\n"
                << FormatDeathTestOutput(error_message);
       }
@@ -734,8 +734,8 @@ int WindowsDeathTest::Wait() {
   GTEST_DEATH_TEST_CHECK_(
       ::GetExitCodeProcess(child_handle_.Get(), &status_code) != FALSE);
   child_handle_.Reset();
-  set_status(static_cast<int>(status_code));
-  return status();
+  SetStatus(static_cast<int>(status_code));
+  return Status();
 }
 
 // The AssumeRole process for a Windows death test.  It creates a child

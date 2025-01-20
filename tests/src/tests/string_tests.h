@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include <stulu/stl/string.h>
 
-using string_type = stulu::string;
+using string_type = Stulu::string;
 
 class StringTest : public ::testing::Test {
 protected:
@@ -147,7 +147,7 @@ TEST_F(StringTest, SublenAppend) {
 TEST_F(StringTest, AppendConstChar) {
     str = "Hello";
     str.append(' ');
-    str.append(stulu::string("World"));
+    str.append(Stulu::string("World"));
     str.append((" from C++"));
 
     EXPECT_EQ(str, "Hello World from C++");
