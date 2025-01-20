@@ -14,7 +14,7 @@
 int main(int argc, char** argv) {
 
 	//return socket_tests(argc);
-	return http_parse_test();
+	//return http_parse_test();
 	//return simple_tcp_echo_test();
 
 	::testing::InitGoogleTest(&argc, argv);
